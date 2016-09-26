@@ -1,0 +1,1224 @@
+wad8.1
+公转，自转，复制对象
+
+8.2
+走直线，时间，函数生命周期，查找对象
+
+8.3(8.4)
+scene  控制飞机  保龄球   桥
+  向量   获得材质属性，鼠标事件，键盘事件，刚体，
+
+8.5
+遥感，按钮,(地形，关节）
+
+8.8周一
+小车的控制（跑赛车模型）
+
+8.9
+GUI
+
+8.10
+NGUI
+
+8.11
+NGUI(纯操作）
+
+8.12
+平衡球游戏（删除预设体，没了）8.13
+
+8.15（周一）
+代码生成精灵，按钮，代码同一管理子对象
+
+8.16
+等待执行，发送消息，向上发送向下广播，协程，老动画
+
+8.17
+新动画，状态机操作，剪切动画
+
+8.18
+多人动画，动画混合，脚本控制多人动画，动画进入退出时函数
+
+8.19
+倒计时按钮(技能cd) 小地图  坦克大战
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+8.19(周六）8.20（周日）
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+using UnityEngine;
+using System.Collections;
+
+public class fuzhixuanzhuan : MonoBehaviour {
+
+	public GameObject cube;
+	public GameObject sphere;
+	private GameObject obj;
+	// Use this for initialization
+	void Start () {
+		cube.GetComponent<MeshRenderer> ().material.color = Color.red;
+		sphere.GetComponent<MeshRenderer> ().material.color = Color.blue;
+		obj = Instantiate (sphere);
+
+		//	obj = Instantiate (sphere, sphere.GetComponent<Transform> ().position, this.transform.rotation)as GameObject;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		//this.tranform.Rotate(new Vector3(0,0,1);
+//		cube.GetComponent<Transform> ().Rotate (0, 0, 1);
+//		sphere.GetComponent<Transform> ().Rotate (0, 1, 0);
+//		obj.GetComponent<Transform> ().Rotate (1, 0, 0);
+		cube.GetComponent <Transform > ().RotateAround (sphere.GetComponent <Transform > ().position, Vector3.up, 1);
+	}
+}
+=======================================
+using UnityEngine;
+using System.Collections;
+
+public class xuanzhuan : MonoBehaviour {
+
+
+	public GameObject myPre;
+	public int number=3;
+	public Transform  newPos;
+
+	// Use this for initialization
+	void Start () {
+		for (int i=0; i<number; i++) {
+			float x=newPos.position .x ;
+			float y=newPos .position .y;
+			float z=newPos .position .z;
+			Instantiate (myPre ,new Vector3(x,y,z+i),this.transform .rotation );
+		}
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		//this.transform .Rotate(new Vector3(0,0,1));
+		this.transform .Rotate(new Vector3(0,1,0));
+		//this.transform .Rotate(new Vector3(1,0,0));
+	}
+}
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.2
+走直线，时间，函数生命周期，查找对象
+using UnityEngine;
+using System.Collections;
+
+public class xuanzhuan : MonoBehaviour {
+//	public GameObject sphere;
+//	public GameObject capsule;
+//	public int number=3;
+	// Use this for initialization
+	//void Start () {
+//		Debug.Log ("wanjiawu");
+//		Debug.LogError ("error");
+//		Debug.LogWarning ("warning");
+//		Debug.LogFormat ("{0}:{1}", 1, 2);
+//		for(int i=0;i<number;i++){
+//			float x = sphere.GetComponent <Transform > ().position.x;
+//			float y = sphere.GetComponent <Transform > ().position.y;
+//			float z = sphere.GetComponent <Transform > ().position.z;
+//			Instantiate (sphere, new Vector3 (x, y + 2 * i, z), sphere.GetComponent <Transform > ().rotation);
+//			Instantiate (capsule , new Vector3 (x, y, z+ 2 * i ), capsule .GetComponent <Transform > ().rotation);
+//		}
+	//}
+
+	// Update is called once per frame
+	//void Update () {
+		//sphere.GetComponent <Transform > ().RotateAround (capsule.GetComponent <Transform >().position ,new Vector3(0,1,0), 1);
+		//capsule.GetComponent <Transform > ().Rotate (new Vector3 (0, 0, 1));
+//		capsule .transform.Rotate (0, 0, 1);
+//		sphere.transform.Translate (0, 0, 1 * Time.deltaTime);
+		//sphere.transform.Translate (0, 0, 1 * Time.deltaTime,Space.World );
+
+	//}
+
+
+
+
+//	void Start(){
+//		Time.timeScale = 0;//时间比例，等于1正常运行，等于0暂停，大于1加快，只影响FixedUpdate
+//	}
+//	void Update(){
+//		//Debug.Log (Time.deltaTime);//两帧之间的时间间隔
+//		//Debug.Log (Time.fixedDeltaTime);//固定时间间隔，Edit->ProjectSetting中打开可以修改
+////		Debug.Log (Time.time);//deltatime经历总时间
+////		Debug.Log (Time.fixedTime);//fixeddeltatime经历总时间
+//	//	Debug.Log (Time.timeScale);//时间比例
+//		Debug.Log ("haha");
+//	}
+//	void FixedUpdate(){//固定时间
+//		Debug.Log ("fix");
+//	}
+//	void LateUpdate(){//在Update之后
+//		Debug.Log ("late");
+//	}
+
+
+//
+//	//生命周期函数
+//    void Reset(){
+//		print ("reset");
+//	}
+//	void Awake(){
+//		print ("awake");
+//	}
+//	void OnEnable(){
+//		print ("enable");
+//	}
+//
+//	void Start(){
+//		print ("start");
+////		HelloWorld hello = this.GetComponent <HelloWorld > ();
+////		hello.sayHello ();
+//
+////		GameObject obj = GameObject.Find ("Cube");
+////		HelloWorld hello = obj.AddComponent <HelloWorld > ();
+////		hello.enabled = false;
+////		obj.GetComponent <HelloWorld> ().sayHello ();
+//	}
+//	void Update(){
+//		print ("update");
+//	}
+//	void OnDisable(){
+//		print ("disable");
+//	}
+//	void OnDestroy(){
+//		print ("destory");
+//	}
+
+
+
+
+
+
+
+
+	public GameObject obj;
+	public GameObject obj1;
+	void Start(){
+
+	}
+	void Update(){
+		//obj.transform.RotateAround (obj1.transform.position, Vector3.up, 1);
+		obj.transform.Translate (-3*Time.deltaTime, 0,0);
+		//obj.transform.Rotate (0, 0, 1);
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+using UnityEngine;
+using System.Collections;
+
+public class Findobject : MonoBehaviour {
+	private GameObject obj;
+	// Use this for initialization
+	void Start () {
+		//obj = GameObject.Find ("GameObject/Cube");
+		obj = GameObject.FindWithTag ("Mytag");
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		obj.transform.Rotate (0, 1, 0);
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.3(8.4)
+scene  控制飞机  保龄球   桥
+  向量   获得材质属性，鼠标事件，键盘事件，刚体，
+using UnityEngine;
+using System.Collections;
+
+public class Vectorcal : MonoBehaviour {
+
+
+//	// Use this for initialization
+//	void Start () {
+//		Vector3 v1=new Vector3(1,2,3);
+//		Vector3 v2 = new Vector3 (2, 3, 4);
+//		Vector3 v3=new Vector3 (3,4,5);
+//		Vector3 v4 = v1 + v2;
+//		Vector3 v5 = v2 - v3;
+//		float f1 = Vector3.Dot (v1, v3);
+//		Vector3  v6= Vector3.Cross (v1, v3);
+//		Debug.Log (v4);
+//		Debug.Log (v5);
+//		Debug.Log (f1);
+//		Debug.LogFormat ("差乘结果{0}", v6);//交叉相乘相减
+//		v6.Normalize ();
+//		Debug.Log (v6);
+//		Debug.LogFormat ("v1 的模"+v1.magnitude);
+//		float f2=Vector3.Distance (v1, v2);
+//		Debug.LogFormat ("两个向量的距离" + f2);
+//		Vector3 v7 = Vector3.Max (v1, v2);
+//		Debug.LogFormat ("v1,v2中模最大的是" + v7);
+//		if (Input.GetKey (KeyCode.A)) {
+//		}
+//	}
+//	
+//	// Update is called once per frame
+//	void Update () {
+//	
+//	}
+//
+
+
+
+
+//	public GameObject obj;
+//	void Start () {
+//		MeshRenderer[] render = this.transform.GetComponentsInChildren<MeshRenderer > ();
+//		Debug.Log (render.Length);
+//		render [0].material.color = Color.red;
+//		Debug.Log (transform.up);
+//		Debug.Log (transform.forward);
+//		Debug.Log (transform.right);
+//	
+//	}
+//
+//	// Update is called once per frame
+//	void Update () {
+//		this.transform.Rotate (Vector3.up);
+//		if (Input.GetKey (KeyCode.B)) {
+//			//DestroyObject  (obj);
+//			DestroyImmediate (obj);
+//		}
+//
+//	}
+	//鼠标事件
+	private string str;
+	void Start () {
+
+	}
+
+	// Update is called once per frame
+	void Update () {
+//		//fire1 左键 Fire2 右键  Fire3 滚轮
+//		if(Input .GetButtonDown ("Fire1")){
+//			//Debug .Log (Input .mousePosition);
+//			Debug.Log ("buttondowm");
+//		}
+//		if (Input.GetButton ("Fire1")) {
+//			Debug.Log ("button");
+//		}
+
+
+//		if (Input.GetMouseButtonDown (0)) {//0 1 分别代表鼠标左右键
+//			Debug.Log ("0");
+//		}
+//		if (Input.GetMouseButton (0)) {
+//			Debug.Log ("00");
+//		}
+//		if (Input.GetMouseButtonUp (0)) {
+//			Debug.Log ("000");
+//		}
+
+
+//		if (Input.anyKey) {
+//			Debug.Log ("aaaaaa");
+//		}
+//		if (Input.anyKeyDown) {
+//			Debug.Log ("bbbbbb");
+//		}
+
+
+
+//		if (Input.inputString != "") {
+//			str += Input.inputString;
+//		
+//				Debug.Log (str);
+//			}
+
+
+//		if (Input.GetKey (KeyCode.A)) {
+//			Debug.Log ("aaa");
+//		}
+//		if (Input.GetKeyDown (KeyCode.A)) {
+//			Debug.Log ("Adowm");
+//		}
+//		if (Input.GetKeyUp (KeyCode.A)) {
+//			Debug.Log ("Aup");
+//		}
+
+
+//		Debug.Log (Input.GetAxis ("Horizontal"));
+//		//Debug.Log (Input.GetAxis ("Vertical"));
+//		Debug.Log (Input.GetAxisRaw ("Vertical"));
+
+
+
+//		if (Input.GetKey ("a")) {
+//			print ("aaaa");
+//		}
+//		if (Input.GetKeyDown ("a")) {
+//			print ("bbbbbb");
+//		}
+
+
+//		Debug.LogFormat ("horizontal"+Input.GetAxis ("Horizontal"));
+//		Debug.Log (Input.GetAxis ("Vertical"));
+
+		if (Input.GetMouseButton (0)) {
+			print ("sdfsfd");
+		}
+
+	}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+using UnityEngine;
+using System.Collections;
+
+public class Newouler : MonoBehaviour {
+	public GameObject ball1;
+	public GameObject ball2;
+	// Use this for initialization
+	void Start () {
+
+		//Physics.IgnoreCollision (ball1.GetComponent <Collider > (), ball2.GetComponent <Collider > (), true);//忽略碰撞
+		//this.transform.rotation=Quaternion.Euler(this.transform.eulerAngles+new Vector3(0,-30,30));//将欧拉角转化为四源数
+
+
+//		GetComponent <Rigidbody > ().useGravity = true;
+//		GetComponent <Rigidbody > ().angularVelocity = Vector3.up * 300;//角速度
+//		GetComponent <Rigidbody > ().velocity = Vector3.up * 10;//速度（向上抛）
+	//	GetComponent <Rigidbody > ().centerOfMass = Vector3.up;//重心
+		//GetComponent <Rigidbody > ().detectCollisions = false;//碰撞检测开关//////
+	//	GetComponent <Rigidbody > ().inertiaTensor = Vector3.up;//惯性张量
+	//	GetComponent <Rigidbody > ().inertiaTensorRotation = Quaternion.identity;//旋转惯性张量
+		//GetComponent <Rigidbody > ().AddForce (Vector3.left * 250);//世界而言加力
+		//GetComponent <Rigidbody > ().AddRelativeForce (Vector3.left * 200);//对自己而言加力
+		//GetComponent <Rigidbody > ().AddTorque (Vector3.left * 200);//	扭矩力
+		//GetComponent <Rigidbody > ().AddRelativeTorque (Vector3.left * 200);
+		//GetComponent <Rigidbody > ().AddExplosionForce (900, transform.position, 10);//爆炸力
+//		GetComponent <Rigidbody > ().Sleep ();
+//		GetComponent <Rigidbody > ().WakeUp ();
+	}
+//	void OnCollisionEnter(Collision collisionInfo){
+//		Debug.Log ("enter");
+//		Debug.Log (collisionInfo.gameObject.name);
+//		Destroy (collisionInfo.gameObject);
+//	}
+//	void OnCollisionStay(Collision collisionInfo){
+//		Debug.Log ("stay");
+//	}
+//	void OnCollisionExit(Collision collisionInfo){
+//		Debug.Log ("Exit");
+//	}
+
+	void OnTriggerEnter(Collider coll){
+		Debug.Log (coll.GetComponent <Collider> ().name);
+	}
+	void OnTriggerStay(Collider coll){
+
+		Debug.Log ("Trigger stay");
+	}
+	void OnTriggerExit(Collider coll){
+		Debug.Log ("Trigger exit");
+	}
+	void FixedUpdate(){
+		//GetComponent <Rigidbody > ().MovePosition (transform.position + Vector3.right * Time.deltaTime);//世界，移动
+		//GetComponent <Rigidbody > ().MoveRotation (transform.rotation * Quaternion.Euler (new Vector3 (0, 100, 0) * Time.deltaTime*30));//旋转
+	}
+	// Update is called once per frame
+	void Update () {
+//		print (GetComponent <Rigidbody > ().position);
+//		print (GetComponent <Rigidbody > ().rotation);
+	}
+===============================================================================================================================================================
+
+
+
+===============================================================================================================================================================
+8.5
+遥感，按钮,(地形，关节）
+using UnityEngine;
+using System.Collections;
+
+public class easyTouchTest : MonoBehaviour {
+	public EasyJoystick stick;
+	void OnEnable(){
+		EasyJoystick.On_JoystickMove += OnJoystickMove;
+		EasyJoystick.On_JoystickMoveEnd += OnJoystickMoveEnd;
+	}
+	void OnJoystickMove(MovingJoystick joy){
+		//print ("Move");
+
+		if (joy.joystickName == "New joystick") {
+			float joyPositionX = joy.joystickAxis.x;
+			float joyPositionY = joy.joystickAxis.y;
+			if (joyPositionX != 0 || joyPositionY != 0) {
+				transform.LookAt (new Vector3 (transform.position.x + joyPositionX, transform.position.y,
+					transform.position.z + joyPositionY));
+				transform.Translate (Vector3.forward * Time.deltaTime * 5);
+			}
+		}
+	}
+	void OnJoystickMoveEnd(MovingJoystick joy){
+		//print ("End");
+	}
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		//Debug.Log (stick.JoystickTouch.x);
+		//Debug.Log (stick.JoystickTouch.y);
+
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+using UnityEngine;
+using System.Collections;
+
+public class buttonClick : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	public void click(){
+		Debug.Log ("click");
+		this.GetComponent <MeshRenderer > ().material.color = Color.red;
+	}
+}
+================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+8.8
+小车的控制（跑赛车模型）
+public class CarControl : MonoBehaviour {
+	public WheelCollider FLCollider;
+	public WheelCollider FRCollider;
+	public EasyJoystick myStick;
+	public float maxTorque = 200;
+	public float steerAngle = 20;
+	// Use this for initialization
+	void Start () {
+		this.GetComponent <Rigidbody >().centerOfMass=new Vector3(0,-0.8f,0);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	void FixedUpdate(){
+		if (Input .GetAxis ("Vertical")<0) {
+			FLCollider.brakeTorque = 36000;
+			FRCollider.brakeTorque = 36000;
+		} else {
+			FLCollider.brakeTorque = 0;
+			FRCollider.brakeTorque = 0;
+			FLCollider.motorTorque = maxTorque * myStick.JoystickTouch.y;
+			FLCollider.steerAngle = steerAngle * myStick.JoystickTouch.x;
+			FRCollider.motorTorque = maxTorque * myStick.JoystickTouch.y;
+			FRCollider.steerAngle = steerAngle * myStick.JoystickTouch.x;
+
+
+			FLCollider.motorTorque = maxTorque * Input .GetAxis ("Vertical")+FLCollider.motorTorque;
+			FLCollider.steerAngle = steerAngle * Input .GetAxis ("Horizontal")+FLCollider.steerAngle;
+			FRCollider.motorTorque = maxTorque * Input .GetAxis ("Vertical")+FRCollider.motorTorque;
+			FRCollider.steerAngle = steerAngle * Input .GetAxis ("Horizontal")+FRCollider.steerAngle;
+		}
+
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+public class Wheel1 : MonoBehaviour {
+	public WheelCollider CPCollider;
+	public float CirValue=0;
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		transform.rotation = CPCollider.transform.rotation * Quaternion.Euler (CirValue, CPCollider.steerAngle, 0);
+		//this.transform.rotation=Quaternion.Euler(this.transform.eulerAngles+new Vector3(0,-30,30));//将欧拉角转化为四源数
+
+		CirValue += CPCollider.rpm * 360 / 60 * Time.deltaTime;
+	}
+}
+==============================================================================================================================================================
+
+
+
+
+===============================================================================================================================================================
+8.9
+GUI
+public class Demo : MonoBehaviour {
+	private string str="";
+	private string str1="";
+	private int IntSelectIndex = 0;
+	private bool BoolCheck1 = false;
+	private float value = 100;
+
+
+
+	private bool boo1 = false;
+	private bool boo2=false ;
+
+
+	private Texture2D picture;
+	public Texture2D picture1;
+
+
+	public GUISkin mySkin;
+
+	private string[] infos=new string[5];
+	Vector2 scrollPositoion;
+	// Use this for initialization
+	void Start () {
+		//picture = (Texture2D)Resources.Load ("earth");
+		// picture = Resources.Load<Texture2D> ("earth");
+	}
+	
+	// Update is called once per frame
+	void ButtonClicked(int tag){
+		print (tag);
+	}
+	void Update () {
+		GameObject.Find ("Cube").transform.Translate (new Vector3 (0,  Time.deltaTime,0));
+	}
+	void OnGUI(){
+		if (GUI.Button (new Rect (140, 0, 100, 50), "暂停")) {
+			Time.timeScale = 0;
+		}
+		if (GUI.Button (new Rect (280, 0, 100, 50), "继续")) {
+			Time.timeScale = 1;
+		}
+//		GUI.skin = mySkin;
+//		infos [0] = "111撒的法律纠纷大叫 ；； ；是的觉得饭卡时间；领导说空间发的两个人；人；； ；大姐夫那个热 i 哦范围哦那佛的；单独；哦氛围浓；热阿凡达风格法恩旅人；让国人烦诶哦啊女工肉诶发呢哦 in 分女咧";
+//		infos [1] = "222撒的法律纠纷大叫 ；； ；是的觉得饭卡时间；领导说空间发的两个人；人；； ；大姐夫那个热 i 哦范围哦那佛的；单独；哦氛围浓；热阿凡达风格法恩旅人；让";
+//		infos [2] = "333撒的法律纠纷大叫 ；； ；是的觉得饭卡时间；领导说空间发的两个人；人；； ；大姐夫那个热 i 哦范围哦那佛的；单独；哦氛围浓；热阿凡达风格法恩旅人；让";
+//		infos [3] = "444撒的法律纠纷大叫 ；； ；是的觉得饭卡时间；领导说空间发的两个人；人；； ；大姐夫那个热 i 哦范围哦那佛的；单独；哦氛围浓；热阿凡达风格法恩旅人；让";
+//		infos [4] = "555撒的法律纠纷大叫 ；； ；是的觉得饭卡时间；领导说空间发的两个人；人；； ；大姐夫那个热 i 哦范围哦那佛的；单独；哦氛围浓；热阿凡达风格法恩旅人；让";
+//
+//		scrollPositoion = GUI.BeginScrollView (new Rect (10, 10, 400, 400), scrollPositoion, new Rect (10, 10, 770, 700), true, true);
+//		GUI.Label (new Rect (10, 10, 700, 40), infos [0]);
+//		GUI.Label (new Rect (10, 50, 770, 40), infos [1]);
+//		GUI.Label (new Rect (10, 90, 770, 40), infos [2]);
+//		GUI.Label (new Rect (10, 130, 770, 40), infos [3]);
+//		GUI.Label (new Rect (10, 170, 770, 40), infos [4]);
+//		GUI.EndScrollView ();
+
+
+
+
+//		for (int i = 0; i < 5; i++) {
+//			for (int j = 0; j < 5; j++) {
+//				if (GUI.Button (new Rect (100 * j, 100 * i, 80, 80), "", mySkin.GetStyle ("button1"))) {
+//					ButtonClicked (i * 5 + j);
+//
+//				}
+//			}
+//		}
+
+
+
+
+//		if (GUI.Button (new Rect (100, 100, 100, 100), "", mySkin.GetStyle ("button1"))) {
+//			Application.LoadLevel ("second");
+//		}
+
+
+		//GUI.DrawTexture (new Rect (0, 0, picture.width, picture.height),picture  );
+		//GUI.DrawTexture (new Rect (260, 0, 260, 260), picture1);
+
+
+
+//		GUI.Label (new Rect (Screen.width / 4, Screen.height  / 4, 100, 60), "zheshiyige");//标签
+//		str = GUI.TextField (new Rect (10, 100, 100, 20), str);//文本框
+//		str1 = GUI.PasswordField (new Rect (10, 140, 100, 20), str1, '*');//密码框
+//		if (GUI.Button (new Rect (10, 180, 50, 30), "sure")) {  //按钮
+//			print ("click");
+//		}
+//		IntSelectIndex = GUI.Toolbar (new Rect (10, 230, 200, 30), IntSelectIndex, new string[]{ "Duty", "Equip", "People" });//工具条
+//		print (IntSelectIndex);
+//		BoolCheck1 = GUI.Toggle (new Rect (10, 280, 50, 20), BoolCheck1, "Voice");//复选框
+//		value = GUI.HorizontalSlider (new Rect (10, 320, 200, 30), value, 100.0f, 0.0f);//进度条
+//
+//		GUILayout.BeginArea (new Rect (10, 370, 200, 400));//布局
+//		GUILayout.Button ("Sure");
+//		GUILayout.Label ("i am a sutdent");
+//		GUILayout.Label ("hello morning");
+//		GUILayout.Label ("hello world");
+//		GUILayout.EndArea ();
+
+
+
+//		if (GUILayout.Button ("show")) {
+//			boo1 = true;
+//		}
+//		if (boo1) {
+//			GUILayout.Label ("i can be show");
+//		}
+//		if (GUILayout.Button ("show window")) {
+//			boo2 = true;
+//		}
+//		if (boo2) {
+//			GUILayout.Window (0, new Rect (100, 100, 200, 200), AddWindow, "MyWindow");
+//		}
+
+	}
+	void AddWindow(int num){
+		if (GUILayout.Button ("Exit")) {
+			boo2 = false;
+		}
+	}
+}
+============================================================================================================================================================================
+
+
+
+
+=============================================================================================================================================================================
+8.10
+NGUI
+
+public class OnClass : MonoBehaviour {
+	public UILabel label;
+	public GameObject obj;
+	public UIButton btn;
+	public UISlider   sli;
+	// Use this for initialization
+	void Start () {
+	
+		obj.GetComponent <UILabel > ().text = "zangsanhhhhhhhhh";
+		print (label.text);
+
+		btn.onClick.Add (new EventDelegate (() => {
+			print ("click111");
+		}));
+		btn.onClick.Add (new EventDelegate (Click));
+		btn.onClick.Add (new EventDelegate (this, "Click"));
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		sli.value += 0.01f;
+	}
+	public void Stop(){
+		obj.GetComponent<AudioSource> ().Stop ();
+	}
+	public void Click(){
+		print ("click1");
+	}
+}
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.11
+camera:world模式根据z的大小，Z大的优先触发；UI模式根据深度，深度大的优先触发
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.15
+代码生成精灵按钮等
+public class testoncamera : MonoBehaviour {
+	public UISprite spr;
+	public GameObject obj1;
+	// Use this for initialization
+	void Start () {
+		foreach (Transform item in this.transform) {
+			UIEventListener.Get (item.gameObject).onClick = ClickButton;
+		}
+
+	}
+	
+
+	void Update () {
+	
+	}
+
+	void ClickButton(GameObject obj){
+
+		obj.GetComponent <UISprite > ().spriteName = "button_18";
+	}
+	public void Changesprite(){
+		spr.spriteName = "button_18";
+		obj1.GetComponent <UISprite > ().spriteName = "button_25";
+	}
+
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+public class NewBehaviourScript : MonoBehaviour {
+	public UIAtlas mAtlas;  
+	//public UIFont mFont=null ;  
+	//public string mSriteName;  
+	public GameObject PanleMe;
+	/// <summary>  
+	/// 动态加载一个NGUI按钮  
+	/// </summary>  
+	/// <param name="name"></param>  
+	private void CreateServerButton(string key,string name, int index)  
+	{  
+		//获得深度（要创建button的Panle的深度）  
+		int depth = NGUITools.CalculateNextDepth(PanleMe);  
+		//创建button物体,命名、设tag、摆所在panle的相对位置。  
+		GameObject go = NGUITools.AddChild(PanleMe);  
+		go.name = name;  
+	//	go.tag = "trendsButton";  
+		go.transform.localPosition = new Vector3(0, 0, 0);  
+
+		//添加button的背景图片UISprite  
+		UISprite bg = NGUITools.AddWidget<UISprite>(go);  
+		bg.type = UISprite.Type.Sliced;  
+		bg.name = "Background";  
+		bg.depth = depth;  
+		//背景图片使用的图集  
+		bg.atlas = mAtlas;  
+		//图集中使用的精灵名字  
+		bg.spriteName = "button_18";  
+		bg.transform.localScale = new Vector3(1, 1, 1);  
+		//调整位置（必要）  
+		//	bg.MakePixelPerfect();  
+		print (bg.localSize);
+
+		//如果有字体，添加UILabel  
+//		if (mFont != null)  
+//		{  
+//			UILabel lbl = NGUITools.AddWidget<UILabel>(go);  
+//			lbl.bitmapFont = mFont;  
+//			lbl.text = key;  
+//			lbl.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);  
+//			lbl.transform.localPosition = new Vector3(0, 0, -1f);  
+//			lbl.color = Color.black;  
+//			//lbl.MakePixelPerfect();  
+//		} 
+
+
+		//添加碰撞（有碰撞才能接收鼠标/触摸），大小与Button背景一致  
+		BoxCollider box = bg.gameObject.AddComponent<BoxCollider> (); 
+		box.center = new Vector3(0,0,-1);  
+		box.size = new Vector3(bg.localSize.x, bg.localSize.y, 0);  
+
+		UIButton btnScript = bg.gameObject.AddComponent<UIButton> ();
+		UIEventListener.Get (bg.gameObject).onClick = OnClick;
+		//bg.gameObject.AddComponent<Test> ();
+		//UIEventListener.Get (bg.gameObject).onClick = OnClick;
+
+		//		
+		//		btnScript.onClick.Add (new EventDelegate (clicke));
+
+
+
+		//添加UIButton触发事件的必要组件，并关联之前生成的UISprite  
+		//go.AddComponent<UIButton>().tweenTarget = bg.gameObject;  
+		//添加动态效果组件（大小、位移、音效）。（可选）  
+		//		go.AddComponent<UIButtonScale>();  
+		//		go.AddComponent<UIButtonOffset>();  
+		//		go.AddComponent<UIButtonSound>();  
+
+		/*------ 一下是自己要用到的UIButton功能，可以绑自己需要的组件 ------*/  
+		//添加一个开启Player list Panel 的按钮事件  
+		/*
+		UIButtonTween serverListPanel = go.AddComponent<UIButtonTween>();  
+		serverListPanel.tweenTarget = PanleNext;  
+		serverListPanel.playDirection = AnimationOrTween.Direction.Forward;  
+		serverListPanel.ifDisabledOnPlay = AnimationOrTween.EnableCondition.EnableThenPlay;  
+
+		//隐藏自己panel  
+		UIButtonTween hidemePanel = go.AddComponent<UIButtonTween>();  
+		hidemePanel.tweenTarget = PanleMe;  
+		hidemePanel.playDirection = AnimationOrTween.Direction.Reverse;  
+		hidemePanel.disableWhenFinished = AnimationOrTween.DisableCondition.DisableAfterReverse;  
+
+		//添加点击事件，参数是服务器ID（点击获取本服务器ID的下所有角色）  
+		UIButtonMessage ubm = go.AddComponent<UIButtonMessage>();  
+		ubm.target = Playerlist;  
+		//给UIButtonMessage子增加传递‘参数’功能。  
+		ubm.functionName = "Playerlist";  
+		ubm.parameterStr = key;  
+		*/
+	}  
+
+	/// <summary>  
+	/// 清空动态生成的按钮  
+	/// </summary>
+	/// 
+	/// 
+	/*  
+	void cleantrendsButton()  
+	{  
+		GameObject[] tbs = GameObject.FindGameObjectsWithTag("trendsButton");  
+		for (int i = 0; i < tbs.Length; i++)  
+		{  
+			Destroy(tbs[i].gameObject);  
+		}  
+	}  
+	*/
+	// Use this for initialization
+	void Start () {
+		CreateServerButton ("你好中国","MyButton",1);
+	}
+
+
+	void clicke(){
+		print ("click");
+	}
+	// Update is called once per frame
+	void Update () {
+
+	}
+
+	void OnClick(GameObject go){
+		print ("OOOOOO");
+	}
+}
+
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.16
+等待执行，发送消息，向上发送向下广播，协程，老动画
+public class OnClass : MonoBehaviour {
+	public GameObject Cube;
+	// Use this for initialization
+//	void Start () {
+////		//向下广播,所有子节点都发送
+////		Cube.BroadcastMessage ("DisplayInfo1");
+//
+//		//向上发送消息，所有父节点都发送
+//		Cube.SendMessageUpwards ("DisplayInfo1");
+//
+////		Cube.SendMessage ("DisplayInfo1");
+////		Cube.SendMessage ("DisplayInfo2", 2);
+////		Cube.SendMessage ("DisplayInfo3", "MyStr");
+//
+//		//Invoke ("Once", 2);
+//		//InvokeRepeating ("Repting", 5F, 1F);//五秒之后一秒调用一次
+//	}
+//	
+//	// Update is called once per frame
+//	void Update () {
+//	
+//	}
+//	void Once(){
+//		print ("ONce");
+//	}
+//	void Repting(){
+//		print ("Repting");
+//	}
+//	void OnDisable(){
+//		CancelInvoke ();
+//	}
+
+
+
+	void Start(){
+		print ("1");
+		StartCoroutine ("xiecheng");
+		print ("4");
+	}
+
+	IEnumerator xiecheng(){
+		yield return new WaitForSeconds (1F);
+		print ("2");
+		yield return new WaitForSeconds (2F);
+		print ("3");
+	}
+	void OnDisable(){
+		StopCoroutine ("xiecheng");
+		StopAllCoroutines ();
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+public class AnimCtrl : MonoBehaviour {
+	private Animation anim;
+	public AnimationClip _idle;
+	public AnimationClip _attack;
+	public AnimationClip _defend;
+	public AnimationClip _jump;
+	public AnimationClip _run;
+	public AnimationClip _die;
+
+	// Use this for initialization
+	void Start () {
+		anim = this.GetComponent <Animation > ();
+		anim [_idle.name].enabled = true;
+		anim [_idle.name].layer = 1;
+		anim [_attack.name ].enabled = true;
+		anim [_attack.name].layer = 2;
+		anim [_defend.name].enabled = true;
+		anim [_defend.name].layer = 1;
+		anim [_jump.name].enabled = true;
+		anim [_jump.name].layer = 1;
+		anim [_run.name].enabled = true;
+		anim [_run.name].layer = 1;
+		anim [_die.name].enabled = true;
+		anim [_die.name].layer = 1;
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.A)) {
+			//anim.Play ("Attack");
+			anim.CrossFade ("Attack", 0.8f);//过渡
+		} else if (Input.GetKeyDown (KeyCode.S)) {
+			//anim.Play ("Die");
+			anim.CrossFade ("Die", 0.8f);
+		} else if (Input.GetKeyDown (KeyCode.Space)) {
+			anim.CrossFade ("Jump", 0.8f);
+		}
+		if (!anim.isPlaying) {
+			anim.Play ("Idle");
+		}
+	}
+}
+
+
+
+
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.17
+新动画，状态机操作，剪切动画
+public class OnClass : MonoBehaviour {
+	private Animator anim;
+	public float moveSpeed = 4.0f;
+	public float DirSpeed = 6.0f;
+
+	// Use this for initialization
+	void Start () {
+		anim = this.GetComponent <Animator > ();
+	}
+	void OnAnimatorMove(){
+		if (anim) {
+//			Vector3 newPosition = transform.position;
+//			newPosition.x += Input.GetAxis ("Horizontal") * moveSpeed * Time.deltaTime;
+//			newPosition.z += Input.GetAxis ("Vertical") * moveSpeed * Time.deltaTime;
+//			transform.position = newPosition;
+
+		}
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		float x = Input.GetAxis ("Horizontal");
+		float z = Input.GetAxis ("Vertical");
+		anim.SetFloat ("Direction", x);
+		if (Input.GetKey (KeyCode.W)) {
+			anim.SetInteger ("New Int", 3);
+		}
+		if (Input.GetKey (KeyCode.S )) {
+			anim.SetInteger ("New Int", 1);
+		}
+		if(Input .GetKey (KeyCode.E )){
+		anim.SetBool ("New Bool", true);
+			 }
+		if (Input.GetKey (KeyCode.R)) {
+			anim.SetBool ("New Bool", false );
+		}
+
+		if(Input .GetKey (KeyCode.Q  )){
+		anim.SetTrigger ("New Trigger");
+		}
+	}
+}
+
+
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.18
+多人动画，动画混合，脚本控制多人动画，动画进入退出时函数
+using UnityEngine;
+using System.Collections;
+
+public class AttackBehaviour : StateMachineBehaviour {
+
+	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo,int layerIndex){
+		Debug.Log (animator.name);
+		Debug.Log ("Begin");
+		Debug.Log (layerIndex);
+	}
+	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo,int layerIndex){
+
+		Debug.Log ("Exit");
+
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+using UnityEngine;
+using System.Collections;
+
+public class OnClass : MonoBehaviour {
+//	public Animator people;
+//	public Animator soilder;
+
+	Animator people;
+	 Animator soilder;
+
+	// Use this for initialization
+	void Start () {
+		people = GetComponent <Animator > ();
+		soilder = GameObject.Find ("soldier").GetComponent <Animator > ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.A)) {
+		
+			people.SetFloat ("attackctrl", 1.0f);
+			soilder.SetFloat ("attackctrl", 1.0f);
+		} else if (Input.GetKeyUp (KeyCode.A)) {
+			people.SetFloat ("attackctrl", 0.0f);
+			soilder.SetFloat ("attackctrl", 0.0f);
+		}
+	}
+}
+
+
+==========================================＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+8.19
+倒计时按钮 小地图
+
+
+
+public class OnClass1 : MonoBehaviour {
+	public UISprite skillSp;
+	public UILabel timeLabel;
+	private bool isCanAttack = true;
+	private float currentTime;
+	private float totalTime;
+	private float hasTime;
+
+	// Use this for initialization
+	void Start () {
+		currentTime = 0;
+		totalTime = 5;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (skillSp.fillAmount.Equals (1)) {
+			return;
+		}
+		currentTime += Time.deltaTime;
+		hasTime = totalTime-Mathf.FloorToInt (currentTime);
+		timeLabel.text = hasTime.ToString ();
+		float fill = currentTime / totalTime;
+		skillSp.fillAmount = fill;
+		if (currentTime >= totalTime) {
+			isCanAttack = true;
+			currentTime = 0;
+			timeLabel.enabled = false;
+			this.GetComponent <UIButton> ().enabled = true;
+		}
+	}
+	 void OnClick(){
+		if (isCanAttack) {
+			skillSp.fillAmount = 0;
+			isCanAttack = false;
+			timeLabel.enabled = true;
+			GetComponent<UIButton> ().enabled = false;
+		}
+	}
+}
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+public class controllmap  : MonoBehaviour { 
+
+	//主角的Transform; 
+	private Transform playerTransform; 
+	//小地图上显示主角的sprite的Transform； 
+	public Transform miniMapArrow; 
+	//显示地图的摄像机的Transform; 
+	public Transform carm; 
+	//预留控制摄像机到主角的高度以供玩家调节小地图大小; 
+	public float hight = 6.89f; 
+	//public GameObject cube;
+
+	void Start () { 
+
+		//实例化； 
+		playerTransform = this.transform; 
+		//sprite的tag可自行调节 
+	//	miniMapArrow = GameObject.FindGameObjectWithTag("Min").transform; 
+
+	} 
+	void Update() 
+	{ 
+		if (Input.GetKey (KeyCode.A)) {
+			transform.Translate (new Vector3 (-0.05f, 0, 0));
+		}
+		if (Input.GetKey (KeyCode.D)) {
+			transform.Translate (new Vector3 (0.05f, 0, 0));
+		}
+		if (Input.GetKey (KeyCode.W)) {
+			transform.Translate (new Vector3 (0, 0, 0.05f));
+		}
+		if (Input.GetKey (KeyCode.S )) {
+			transform.Translate (new Vector3 (0, 0, -0.05f));
+		}
+
+		//设置摄像机的位置让其一直处于主角正上方。 
+		carm.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y+hight, playerTransform.position.z); 
+		//让sprite的旋转方向和主角的面向一致，忽略第六步的可以删除，角度根据模型的设计自行调节 
+		miniMapArrow.rotation = Quaternion.Euler(0, 0, -playerTransform.rotation.eulerAngles.y+180); 
+
+
+
+	} 
+} 
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+小地图shader
+
+Shader "Transparent/Mask"  
+{  
+   Properties  
+   {  
+      _MainTex ("Base (RGB)", 2D) = "white" {}  
+      _Mask ("Culling Mask", 2D) = "white" {}  
+      _Cutoff ("Alpha cutoff", Range (0,1)) = 0.1  
+   }  
+   SubShader  
+   {  
+      Tags {"Queue"="Transparent"}  
+      Lighting Off  
+      ZWrite Off  
+      Blend Off  
+      AlphaTest GEqual [_Cutoff]  
+      Pass  
+      {           
+         SetTexture [_Mask] {combine texture}  
+         SetTexture [_MainTex] {combine texture, previous}  
+      }  
+   }  
+} 
+
+
