@@ -1,0 +1,2210 @@
+8.22
+文件unity自带文本 XML
+
+8.23
+Jason文件 异步加载 协程
+
+8.24
+异步加载 角色控制器
+
+8.25
+iTween插件（皇子）
+
+8.26
+背包(8.27背包修复bug)
+
+8.29
+视频播放，AI
+ 
+8.30-9.5
+项目二
+
+9.6
+寻路NavmeshAgent
+
+9.7
+AssetBundle网络文件上传下载
+
+9.8
+服务器
+程序，java打开服务器（Auntiy/fuwuqi/SphereServer/ServerThread)
+unity打开程序（Unity课件／Unity补充课件／UnityNetworkDemo)
+socketScripts(Aunity/socketScripts)
+
+9.9－9.17
+Aunity/luaOnClass
+
+
+9.18(周日）
+UGUI（音乐播放器）
+
+9.19
+屏幕适配 VS（luaC#交互）
+
+9.20
+MVC框架
+
+9.21
+lua热更新
+
+9.22
+项目打包
+
+
+
+代码版本管理：SVN Git 
+Github版本管理步骤
+1，申请账号，新建代码仓库
+2，下载客户端或者使用命令
+3，客户端点击Clone，将代码下载到本地进行修改
+4，每次修改都要Commit到本地仓库，在点击Sync同步到远程仓库
+5，分支的创建和管理
+6，.gitignore的使用
+工具：GithubDesktop,SourceTree,Tower
+平台：Github,CSDN,Code等
+=================================================================================================================================================================
+
+
+
+=================================================================================================================================================================
+public class OnClass : MonoBehaviour {
+
+//	public string Name{
+//		get{ return PlayerPrefs.GetString ("third"); }
+//		set{
+//			PlayerPrefs.SetString ("third", value);
+//			PlayerPrefs.Save ();
+//		}
+//	}
+	void Awake(){
+//		PlayerPrefs.SetInt ("first", 66);
+//		PlayerPrefs.SetFloat ("second", 66.66f);
+//		PlayerPrefs.SetString ("third", "hello");
+//		PlayerPrefs.SetString ("URL", WWW.EscapeURL ("www.baidu.com"));
+////		PlayerPrefs.DeleteAll ();
+////		PlayerPrefs.DeleteKey ("URL");
+//		if(PlayerPrefs.HasKey ("URL")){}
+//		Debug.Log (PlayerPrefs.GetInt ("first"));
+//		Debug.Log (PlayerPrefs.GetFloat ("second"));
+//		Debug.Log (PlayerPrefs.GetString ("third"));
+//		PlayerPrefs.Save ();
+//
+//		//特殊文件夹(Resouces,Editor,Plungix,StreamingAssets);
+//		Debug.Log (Application.persistentDataPath);
+//		Debug.Log (Application.streamingAssetsPath);
+//		Debug.Log (Application.dataPath);//asset路径；
+	
+	}
+=================================================================================================================================================================
+<?xml version="1.0" encoding="UTF-8"?>
+<Levels>
+  <Level>
+    <Name>"第一关"</Name>
+    <Star>3</Star>
+    <Lock>1</Lock>
+  </Level>
+  <Level>
+    <Name>"第二关"</Name>
+    <Star>2</Star>
+    <Lock>0</Lock>
+  </Level>
+</Levels>
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System .Collections .Generic ;
+using System .Xml ;
+
+public class LevelParse : MonoBehaviour {
+
+	public string xmlFileName = "/Level.xml";
+	public string xmlFilePath = string.Empty;
+	List<Level >levelList=new List<Level>();
+	// Use this for initialization
+	void Start () {
+		xmlFilePath = Application.streamingAssetsPath + xmlFileName;
+		ParserLevel ();
+		aaa ();
+		ParserLevel1 ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	void ParserLevel1(){
+		XmlDocument doc = new XmlDocument ();
+		doc.Load (xmlFilePath);
+		XmlNode root = doc.SelectSingleNode ("Levels");
+		XmlNode node = root.FirstChild;
+		while (node != null) {
+			node = node.NextSibling;
+			print ("aaaa");
+			//node.RemoveChild (node.FirstChild);
+		}
+
+	}
+	void ParserLevel(){
+		XmlDocument doc = new XmlDocument ();
+		doc.Load (xmlFilePath);
+		XmlNode root = doc.SelectSingleNode ("Levels");
+		foreach (XmlElement child in root) {
+			Level currentLevel = new Level ();
+			foreach (XmlElement pro in child) {
+				if (pro.Name == "Name") {
+					currentLevel.name = pro.InnerText;
+				} else if (pro.Name == "Star") {
+					currentLevel.star = int.Parse (pro.InnerText);
+				} else {
+					currentLevel.Lock = int.Parse (pro.InnerText);
+				}
+			}
+			levelList.Add (currentLevel);
+		}
+		doc.Save (xmlFilePath);
+	}
+	void aaa(){
+		foreach (Level item in levelList) {
+			print (item.name);
+			print (item.star);
+			print (item.Lock);
+		}
+	}
+	public static void changeLevel(int index,int star){
+	//内部修改文件和数组
+	}
+}
+
+
+						XmlElement ele = doc.CreateElement ("myString");
+						ele.InnerText = "myString Valueaaaaa";
+						derived.AppendChild (ele);
+=================================================================================================================================================================
+
+
+
+=================================================================================================================================================================
+8.23
+Jason文件 异步加载 协程（yield return 每一帧都停住，下一帧从这里开始）
+
+
+//Application.LoadLevelAdditive (1);//把对象带到下个场景
+			Application.LoadLevel (1);
+
+using UnityEngine;
+using System.Collections;
+
+public class yibujiazai2 : MonoBehaviour {
+	public AsyncOperation asy;
+	public UIScrollBar scroll;
+	// Use this for initialization
+	void Start () {
+		if (scroll) {
+			scroll.value = 0;
+		}
+		StartCoroutine (loadscene ());
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		Debug.Log (asy.progress);
+		if (asy.progress < 0.9) {
+			scroll.value = asy.progress;
+		} else {
+			scroll.value = 1;
+		}
+	}
+	IEnumerator loadscene(){
+		asy = Application.LoadLevelAsync (1);//异步加载
+		yield return asy;
+	}
+}
+
+
+=================================================================================================================================================================
+//协程
+using UnityEngine;
+using System.Collections;
+
+public class xiecheng : MonoBehaviour {
+	public Vector3 target;
+	public float Movespeed=0.02f;
+	// Use this for initialization
+	void Start () {
+		//StartCoroutine (CountDown ("msgmsg"));
+		//StartCoroutine ("CountDown");
+		//StartCoroutine (Saysomething ());
+		//StartCoroutine(RepeatMessage (5, 1, "wanjiajia"));
+		StartCoroutine (MoveToPosition (target));
+	}
+	IEnumerator MoveToPosition(Vector3 target){
+		while (transform.position != target) {
+			transform.position = Vector3.MoveTowards (transform.position, target, Movespeed);
+			yield return 0;
+		}
+	}
+	IEnumerator RepeatMessage(int count,float frequent,string message){
+		for (int i = 0; i < count; i++) {
+			Debug.Log (message);
+			for (float j = 0; j <= frequent; j += Time.deltaTime) {
+				yield return 0;
+			}
+		}
+	}
+	IEnumerator CountDown(string msg){
+		for (float timer = 3; timer >= 0; timer -= Time.deltaTime) {
+			yield return 0;
+		}
+		Debug.Log (msg);
+	}
+	IEnumerator Saysomething(){
+		Debug.Log ("started");
+		yield return  new WaitForSeconds (1);
+		Debug.Log ("1s");
+		yield return StartCoroutine (Wait (2.5f));
+		Debug.Log ("2.5s");
+	}
+	IEnumerator Wait(float waittime){
+		for (float timer = 0; timer < waittime; timer += Time.deltaTime) {
+			yield return 0;
+		}
+	}
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System .IO ;
+
+public class FileManager {
+	private static FileManager instance;
+	public static FileManager GetInstance(){
+		if (instance == null) {
+			instance = new FileManager ();
+		}
+		return instance;
+	}
+	private FileManager (){
+	
+	}
+	public static void CreateORwriteConfigFile(string path,string name,string info){
+		File.WriteAllText (path + "//" + name, info);
+	}
+	public static void DeleteFile(string path,string name){
+		string delpath = path + "//" + name;
+		File.Delete (delpath);
+
+	}
+	public static void createFile(string path,string name){
+		string delpath = path + "//" + name;
+		File.Create  (delpath);
+
+	}
+	public static string LoadFile(string path,string name){
+		string readPath=path+"//"+name;
+		FileInfo info=new FileInfo (readPath );
+		if(info.Exists ){
+			string text=File.ReadAllText (readPath );
+			return text;
+		}else{
+			return null;
+		}
+	}
+
+}
+
+=================================================================================================================================================================
+
+
+using UnityEngine;
+using System.Collections;
+using LitJson ;
+using System .IO;
+
+public class JsonParse : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+		//createJsonData ();
+		//parseArray ();
+		//testFileCreate ();
+		//parsePlayer ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	void parsePlayer(){
+		Player player = new Player ();
+		player.sex = "male";
+		player.name = "wanjiawu";
+
+		string json = JsonMapper.ToJson (player);
+		Debug.Log (json);
+
+		Player player2 = JsonMapper.ToObject <Player> (json);
+		Debug.Log (player2.Name);
+	}
+	void testFileCreate(){
+		string path = Application.dataPath ;
+		string fileName = "demo1.json";
+
+	//	FileManager.DeleteFile (path, fileName);
+	//	FileManager.createFile (path, fileName);
+		string write = "{'name':'taobao','id':10,'item':["+
+			"{'itemid':1001,'itemname':'dtao'},"+
+			"{'itemid':1002,'itemname':'test_2'}]}";
+		FileManager.CreateORwriteConfigFile (path, fileName, write);
+
+		string jsonStr = FileManager.LoadFile (path, fileName);
+		JsonData newData = JsonMapper.ToObject (jsonStr);
+		Debug.LogFormat ("{0},{1}", newData ["name"], newData ["id"]);
+	}
+
+	void createJsonData(){
+		JsonData data = new JsonData ();
+		data ["name"] = "zhangsan";
+		data ["age"] = 20;
+		data ["sex"] = "male";
+		string jsonStr = data.ToJson ();
+		Debug.Log (jsonStr);
+
+		JsonData data1 = new JsonData ();
+		data1 ["name"] = "lisi";
+		data1 ["options"] = new JsonData ();
+		data1 ["options"] ["age"] = 20;
+		data1 ["options"] ["sex"] = "male";
+		string jsonstr = data1.ToJson ();
+		Debug.Log (jsonstr);
+
+		Debug.LogFormat ("{0},{1}", data1 ["name"], data1 ["options"] ["age"]);
+
+		JsonData newdata = JsonMapper.ToObject (jsonstr);
+		Debug.LogFormat ("{0},{1}", newdata ["name"], newdata ["options"] ["age"]);
+	}
+	void parseArray(){
+		string str="{'name':'taobao','id':10,'item':["+
+			"{'itemid':1001,'itemname':'dtao'},"+
+			"{'itemid':1002,'itemname':'test_2'}]}";
+		JsonData jd = JsonMapper.ToObject (str);
+		Debug.Log ("name=" + jd ["name"]);
+		Debug.Log ("id=" + jd ["id"]);
+		JsonData jditems = jd ["item"];
+		Debug.Log (jditems.Count);
+
+		for (int i = 0; i < jditems.Count; i++) {
+			Debug.Log ("itemid=" + jditems [i] ["itemid"]);
+			Debug.Log ("itemname=" + jditems [i] ["itemname"]);
+		
+		}
+		Debug.Log ("items is or not array,it`s" + jditems.IsArray); 
+	}
+}
+
+
+
+public class Player {
+	public string name;
+	public string sex;
+	private int age;
+	public string Name{
+		get{ return name;}
+		set{ name = value;}
+	}
+
+}
+
+=================================================================================================================================================================
+
+
+=================================================================================================================================================================
+8.24
+异步加载 角色控制器
+
+
+异步加载
+using UnityEngine;
+using System.Collections;
+
+public class loadingTest : MonoBehaviour {
+	public UIProgressBar progerss;
+	public GameObject[] Objects;
+	int load_index=0;
+	// Use this for initialization
+	void Start () {
+		StartCoroutine(StartLoading_4());
+		//StartCoroutine ("loadObject");
+
+	}
+	IEnumerator loadObject(){
+		foreach (GameObject obj in Objects) {
+			obj.SetActive (true);
+			load_index++;
+			yield return 0;
+		}
+		yield return 0;
+	}
+	IEnumerator StartLoading_1(){
+		AsyncOperation op = Application.LoadLevelAsync (1);
+		while (!op.isDone) {
+			SetLoadingPercentage (op.progress * 100);
+			yield return new WaitForEndOfFrame ();
+		}
+	}
+	void SetLoadingPercentage(float value){
+		progerss.value = value / 100;
+	}
+
+
+	private IEnumerator StartLoading_3(){
+		AsyncOperation op = Application.LoadLevelAsync (1);
+		op.allowSceneActivation = false;
+		while (op.progress < 0.9f) {
+			SetLoadingPercentage (op.progress * 100);
+			yield return new WaitForEndOfFrame ();
+		}
+		SetLoadingPercentage (100);
+		yield return new WaitForEndOfFrame ();
+		op.allowSceneActivation = true;
+	}
+	private IEnumerator StartLoading_4(){
+		int diaplayProgress = 0;
+		int toProgress = 0;
+		AsyncOperation op = Application.LoadLevelAsync (1);
+		op.allowSceneActivation = false;
+		while (op.progress < 0.9f) {
+			toProgress = (int)op.progress * 100;
+			while (diaplayProgress < toProgress) {
+				++diaplayProgress;
+				SetLoadingPercentage (diaplayProgress);
+				yield return new WaitForEndOfFrame ();
+			}
+		}
+		toProgress = 100;
+		while (diaplayProgress < toProgress) {
+			++diaplayProgress;
+			SetLoadingPercentage (diaplayProgress);
+			yield return new WaitForEndOfFrame ();
+		}
+		op.allowSceneActivation = true;
+	}
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+
+=================================================================================================================================================================
+射线
+using UnityEngine;
+using System.Collections;
+
+public class charactorColltral : MonoBehaviour {
+	public Vector3 VecGoalPosition;
+	CharacterController cc;
+	// Use this for initialization
+	void Start () {
+		cc = gameObject.GetComponent <CharacterController> ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input .GetMouseButton (0)){
+			Ray ray=Camera .main .ScreenPointToRay (Input .mousePosition);
+			RaycastHit hit;
+			if(Physics .Raycast (ray,out hit)){
+				VecGoalPosition=hit.point ;
+			}
+		}
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			//this.transform.Translate (new Vector3 (0, 2, 0));
+			cc.Move (new Vector3 (this.transform.position.x, this.transform.position.y + 0.1f, this.transform.position.z ));
+		}
+		if (Vector3.Distance (VecGoalPosition, this.transform.position) > 1F) {
+			Vector3 step = Vector3.ClampMagnitude (VecGoalPosition - this.transform.position, 0.1f);
+			cc.Move  (step);
+		}
+	}
+	void OnControllerColliderHit(ControllerColliderHit hit){
+		if (hit.collider.gameObject.name == "Cube") {
+			print ("hit");
+		}
+		print (cc.isGrounded);
+	}
+}
+
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class peoplecharcolltral : MonoBehaviour {
+	private CharacterController c;
+	private Animation animation;
+	public EasyJoystick joy;
+	private Vector3 moveDirection = Vector3.zero;
+	public float moveSpeed =5.0f;
+	public float pushPower = 2.0f;
+	// Use this for initialization
+	void Start () {
+		c = this.GetComponent <CharacterController> ();
+		animation = this.GetComponent <Animation> ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		float x = joy.JoystickTouch.x;
+		float z = joy.JoystickTouch.y;
+		if (x != 0 || z != 0) {
+			transform .LookAt (new Vector3 (transform .position .x+x,transform .position .y,transform .position .z+z));
+				moveDirection=transform .TransformDirection (Vector3.forward );
+				moveDirection =moveDirection *4.0f*Time.deltaTime ;
+				moveDirection .y-=9.8f*Time.deltaTime ;
+				CollisionFlags  flgs=c.Move (moveDirection );
+				GetComponent <Animation >().CrossFade ("Run",0.5f);
+
+				}else{
+					GetComponent <Animation >().CrossFade ("Idle",0.5f);
+				}
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			transform.Translate (Vector3.up);
+		}
+	}
+	void OnControllerColliderHit(ControllerColliderHit hit){
+		Rigidbody body = hit.collider.attachedRigidbody;
+		if (body == null || body.isKinematic) {
+			return;
+		}
+		Vector3 pushDir = new Vector3 (hit.moveDirection.x, 0, hit.moveDirection.z);
+		body.velocity = pushDir * pushPower;
+	}
+}
+
+
+
+=================================================================================================================================================================
+
+
+=================================================================================================================================================================
+8.25
+iTween插件
+
+
+using UnityEngine;
+using System.Collections;
+
+public class Move : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+		//iTween.MoveTo (this.gameObject, Vector3.up *5, 3);
+		//iTween.MoveTo (this.gameObject, iTween.Hash ("time", 5, "x", 10, "looptype", iTween.LoopType.pingPong,
+		//	"oncomplete", "onAnimationComplete"));
+		//iTween.ColorTo (this.gameObject, Color.yellow, 5);
+//		iTween.ColorTo (this.gameObject, iTween.Hash ("r", 0, "g", 0, "b", 255,"a",0.2f, "includechildren", true,"time",3));
+		//iTween.ColorFrom (this.gameObject, Color.green, 3);
+//		Hashtable hash = new Hashtable ();
+//		hash.Add ("time", 5);
+//		hash.Add ("x", 10);
+//		hash.Add ("looptype", iTween.LoopType.pingPong);
+	//	iTween.ScaleTo (this.gameObject, iTween.Hash ("time", 5, "x", 5,"y",5,"z",5,"looptype",iTween .LoopType.pingPong ));
+		iTween.PunchPosition (this.gameObject, iTween.Hash ("time", 2, "x", 2, "y", 2));
+		//iTween.ShakePosition (this.gameObject, iTween.Hash ("time", 2, "x", 2, "y", 2));
+	}
+
+	void onAnimationComplete(){
+		print ("complete");
+	}
+	// Update is called once per frame
+	void Update () {
+	//	iTween.MoveBy (this.gameObject, Vector3.up * 5, 3);
+		//iTween.MoveUpdate (this.gameObject, Vector3.up * Time.deltaTime, 2);
+	}
+}
+
+
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class camerafade : MonoBehaviour {
+//	public Texture2D texture;
+//	public Vector3[] vecs;
+
+
+//	// Use this for initialization
+//	void Start () {
+//		//iTween.CameraFadeAdd (texture);
+//		//iTween.CameraFadeFrom (1,3);
+//		//iTween.CameraFadeTo (1, 3);
+//	}
+//	void OnDrawGizmos(){
+//		//iTween.DrawLine (vecs, Color.red);
+//		//iTween.DrawPath (vecs, Color.red);
+//	}
+//	// Update is called once per frame
+//	void Update () {
+//	
+//	}
+
+	public GameObject go;
+	void Start(){
+//		iTween.MoveTo (this.gameObject, iTween.Hash ("time", 10, "looktarget", go.transform, "path",
+//			iTweenPath.GetPath ("New Path 1"), "oncomplete", "Method"));
+
+	}
+	void Method(){
+		print ("aaa");
+	}
+
+
+}
+
+
+=================================================================================================================================================================
+
+
+
+=================================================================================================================================================================
+
+8.26
+背包
+
+
+
+=================================================================================================================================================================
+1001,小血瓶,NGUI,Drug,50,0,50,60
+1002,大血瓶,Glow,Drug,100,0,70,100
+1003,蓝瓶,Fantasy Font,Drug,0,100,60,80
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+public enum ObjectType
+{
+	Drug,
+	Equip,
+	Mat
+}
+public class ObjectInfo  {
+
+
+	public int id;
+	public string name;
+	public string iconName;
+	public ObjectType type;
+	public int hp;
+	public int mp;
+	public int priceSell;
+	public int priceBuy;
+}
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System .Collections .Generic ;
+
+public class ObjectsInfo : MonoBehaviour {
+	public static ObjectsInfo _instance;
+	public TextAsset objectsInfoList;
+	private Dictionary <int ,ObjectInfo > objectInfoDictionary = new Dictionary<int, ObjectInfo> ();
+	void Awake(){
+		_instance = this;
+		ReadInfo ();
+		foreach (var item in objectInfoDictionary) {
+			print (item);
+		}
+	}
+	public ObjectInfo GetObjectInfoById(int key){
+		ObjectInfo info = new ObjectInfo ();
+		objectInfoDictionary.TryGetValue (key, out info);
+		return info;
+	}
+	private void ReadInfo(){
+		string text = objectsInfoList.text;
+		string[] strArray = text.Split ('\n');
+		foreach (string str in strArray) {
+			string[] proArray = str.Split (',');
+			ObjectInfo info = new ObjectInfo ();
+			int id = int.Parse (proArray [0]);
+			string name = proArray [1];
+			string iconName = proArray [2];
+			string typeStr = proArray [3];
+
+			info.id = id;
+			info.name = name;
+			info.iconName = iconName;
+			ObjectType type = ObjectType.Drug;
+			switch (typeStr) {
+			case "Drug":
+				type = ObjectType.Drug;
+				break;
+			case "Equip":
+				type = ObjectType.Equip;
+				break;
+			case "Mat":
+				type = ObjectType.Mat;
+				break;
+
+
+			}
+			info.type = type;
+			if (type == ObjectType.Drug) {
+				int hp = int.Parse (proArray [4]);
+				int mp = int.Parse (proArray [5]);
+				int priceSell = int.Parse (proArray [6]);
+				int priceBuy = int.Parse (proArray [7]);
+				info.hp = hp;
+				info.mp = mp;
+				info.priceBuy = priceBuy;
+				info.priceSell = priceSell;
+			}
+
+			objectInfoDictionary.Add (id, info);
+		}
+
+	}
+
+}
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System .Collections .Generic ;
+
+public class ctrollbg : MonoBehaviour {
+	public static ctrollbg _instance;
+	private TweenPosition tweenPosition;
+	private bool isShow = false;
+	private int coinCount = 1000;
+	//public UILabel conCountLabel;
+	//public GameObject itemPerfab;
+	public List <InventoryItemGrid> itemGridList = new List<InventoryItemGrid> ();
+
+	void Awake(){
+		_instance = this;
+		tweenPosition = GetComponent <TweenPosition > ();
+	}
+	private void Show(){
+		isShow = true;
+		tweenPosition.PlayForward ();
+	}
+	private void Hide(){
+		isShow = false;
+		tweenPosition.PlayReverse ();
+	}
+	public void TransformState(){
+		if (!isShow) {
+			Show ();
+		} else if (isShow) {
+			Hide ();
+		}
+	}
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System .Collections .Generic ;
+
+public class InventoryItem : UIDragDropItem {
+	private UISprite sprite;
+	private int id;
+
+
+	void Awake(){
+		sprite = this.gameObject.GetComponent <UISprite > ();
+	}
+	public void SetId(int id){
+		ObjectInfo info = ObjectsInfo._instance.GetObjectInfoById(id);
+		sprite.spriteName = info.iconName;
+		this.id = id;
+	}
+	protected override void OnDragDropRelease(GameObject surface){
+		base.OnDragDropRelease (surface);
+		if (surface != null) {
+			if (surface.tag == Tags.INVERTORY_ITEM) {
+				InventoryItemGrid oldGrid = this.transform.parent.GetComponent <InventoryItemGrid> ();
+				int id = oldGrid.id;
+				int num = oldGrid.num ;
+				InventoryItemGrid newGrid = surface.transform.parent.GetComponent <InventoryItemGrid> ();
+				oldGrid.SetId (newGrid.id, newGrid.num);
+				newGrid.SetId (id, num);
+				ResetPosition ();
+			} else if (surface.tag == Tags.INVERTORY_GRID) {
+				if (surface.transform.parent == this.transform.parent) {
+					ResetPosition ();
+				} else {
+					InventoryItemGrid oldGrid = this.transform.parent.GetComponent <InventoryItemGrid> ();
+					InventoryItemGrid nowGrid = surface.GetComponent <InventoryItemGrid> ();
+					this.transform.parent = surface.transform;
+					ResetPosition ();
+					nowGrid.SetId (oldGrid.id, oldGrid.num);
+					oldGrid.ClearInfo ();
+				}
+			} 
+			else {
+				ResetPosition ();
+			}
+		} 
+		else {
+			ResetPosition ();
+		}
+	}
+	private void ResetPosition(){
+		transform.localPosition = Vector3.zero;
+	}
+
+}
+
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class InventoryItemGrid : MonoBehaviour {
+	public int id = 0;
+	public int num = 0;
+	private ObjectInfo info = null;
+	private UILabel numLabel;
+
+	// Use this for initialization
+	void Start () {
+		numLabel = this.GetComponentInChildren<UILabel> ();//k
+		SetId (id, num);
+	}
+	public void SetId(int id,int num=1){
+									//k
+		if (id == 0) {
+			return;
+		}
+		this.id = id;
+		info = ObjectsInfo._instance.GetObjectInfoById (id);
+		InventoryItem item = this.GetComponentInChildren<InventoryItem> ();
+		this.num = num;
+		numLabel.text = this.num.ToString ();
+		numLabel.enabled = true;
+		item.SetId (id);
+	}
+	public void PlusNum(int num=1){
+		this.num += num;
+		numLabel.text = this.num.ToString ();
+	}
+	public void ClearInfo(){
+		id=0;
+		num=0;
+		info=null;
+		numLabel.enabled = false;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class Tags : MonoBehaviour {
+
+	public const string GROUND="Ground";
+	public const string PLAYER="Player";
+	public const string INVERTORY_ITEM="InvertoryItem";
+	public const string INVERTORY_GRID="InvertoryGrid";
+}
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+
+public class Ontankuang : MonoBehaviour {
+	private UILabel label;
+	// Use this for initialization
+	void Start () {
+		label = this.GetComponentInChildren<UILabel > ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	public void show(){
+		//label.text = "aaaaa";
+		print (label.text);
+		this.gameObject.SetActive (true);
+	}
+	public void hide(){
+		this.gameObject.SetActive (false);
+	}
+}
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+8.29
+视频播放，AI
+视屏播放：把视频放入NGUI的texture中
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class AITest : MonoBehaviour {
+	public Transform followTarget;
+	public CharacterController con;
+	public Animation ani;
+	public GameObject Canv;
+	
+	public float chouHen = 5f;
+	public float attackDis = 2f;
+	
+	public float thinkTime = 1f;
+	public float currentTime = 0f;
+	
+	public float walkTime = 5f;
+	public float walkCurrentTime = 0f;
+	
+	
+	public float walkThinkTime = 4f;
+	public float walkThinkCurrentTime = 0f;
+	
+	int skillIndex = 1;
+	
+	bool isAttack = false;
+
+	public float Hp = 0f;
+	public float MaxHp = 100f;
+	public Slider slider;
+
+	// Use this for initialization
+	void Start () {
+		InvokeRepeating("RangeSkillIndex",3,3);//重复调用,从第一次调用开始,每隔repeatRate时间调用一次.
+		Hp = 100f;
+	}
+	void RangeSkillIndex()
+	{
+		skillIndex =Random.Range(1,4);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		//思考 一段时间
+		Think();
+
+		//让Boss看向目标
+		LookTarget();
+
+		updateSliderValue ();
+		Canv.transform.LookAt (Camera.main.transform);
+		
+	}
+	
+	void  LookTarget()
+	{
+		
+		if(Vector3.Distance(transform.position,followTarget.position) < chouHen  ){
+			transform.LookAt(followTarget);
+			if(Vector3.Distance(transform.position,followTarget.position) > attackDis  )
+			{
+				Vector3 moveDirection = transform.TransformDirection(Vector3.forward);
+				moveDirection.y -= 9.8f* Time.deltaTime;
+				con.Move(moveDirection*1f*Time.deltaTime);
+				isAttack = false;
+				ani.CrossFade("Run");
+			}
+			//抵达攻击区域，开始攻击
+			else
+			{
+				ani.CrossFade("Attack");
+				isAttack = true;
+			}
+		}
+	}
+	
+	
+	void Think()
+	{
+		if(isAttack)
+			return;
+
+		currentTime += Time.deltaTime;
+		if(currentTime >= (thinkTime+walkTime+walkThinkTime))
+		{
+			currentTime = 0f;
+		}
+		else
+		{
+			walkCurrentTime+= Time.deltaTime;
+			if(walkCurrentTime >= walkTime){
+				ani.CrossFade("Idle");
+				walkThinkCurrentTime+=Time.deltaTime;
+				if(walkThinkCurrentTime>= walkThinkTime)
+				{
+					walkThinkCurrentTime = 0f;
+					walkCurrentTime =0f;
+					float x = Random.Range(-1f,1f);
+					float z= Random.Range(-1f,1f);
+					transform.LookAt(transform.position + new Vector3(x,0,z));
+				}
+			}
+			else
+			{
+				//漫游
+				ani.CrossFade("Run");
+				Vector3 moveDirection = transform.TransformDirection(Vector3.forward);
+				moveDirection.y -= 9.8f;
+				con.Move(moveDirection*1f*Time.deltaTime);
+			}
+			
+		}
+	}
+	
+	void OnTriggerEnter(Collider other)
+	{
+		Debug.Log (other.name );
+		if (Hp > 0) {
+			if(other.tag==("huangziwuqi")){
+				print ("jingrtu");
+				Hp -= 10f;
+			}
+
+//			if (other.tag.Equals ("jn") && HeroCtr.isAttack) {
+//				Hp -= 20f;
+//			}
+		}
+
+		else if (Hp <= 0) {
+			Destroy(this.gameObject);
+		}
+	}
+
+	void updateSliderValue(){
+		slider.value = Hp / MaxHp;
+	}
+	
+}
+
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class PalyMovie : MonoBehaviour {
+	public MovieTexture myMovie;
+	private AudioSource myAudio;
+	private bool stop=true;
+	// Use this for initialization
+	void Start () {
+		myMovie.Play ();
+		myMovie.loop = true;
+
+		myAudio = this.GetComponent <AudioSource > ();
+		myAudio.Play ();
+		myAudio.loop = true;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+	public void ctrmovie(){
+		if (stop == true) {
+			myMovie.Pause ();
+			myAudio.Pause ();
+
+			stop = false;
+		} else if (stop == false) {
+			myMovie.Play ();
+			myAudio.Play ();
+			stop = true;
+		}
+	}
+}
+
+
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+9.6
+寻路NavmeshAgent
+
+
+using UnityEngine;
+using System.Collections;
+
+public class onClass : MonoBehaviour {
+	public NavMeshAgent agent;
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetMouseButtonDown (0)) {
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast (ray, out hit)) {
+				Vector3 p = hit.point;
+				Debug.Log (p);
+				agent.SetDestination (p);
+			}
+		}
+	}
+}
+
+
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+
+public class dymamicRoute : MonoBehaviour {
+	public NavMeshAgent agent;
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	void OnGUI(){
+		if (GUI.Button (new Rect (0, 0, 100, 50), "走下层")) {
+			agent.walkableMask = 9;
+		}
+		if (GUI.Button (new Rect (0, 100, 100, 50), "走上层")) {
+			agent.walkableMask = 17;
+		}
+
+
+	}
+}
+
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+
+public class HeroMovement : MonoBehaviour {
+
+    private NavMeshAgent heroNav;
+    private string aniString;
+    private bool lerpBool;
+    private Vector3 lefpStart;
+    private Vector3 lefpEnd;
+    private float lerpRatio;
+
+	void Start () {
+        heroNav = GetComponent<NavMeshAgent>();
+        aniString = "hit1";
+	}
+	void Update () {
+				if (Input.GetMouseButtonDown (0)) {
+						Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+						RaycastHit hit;
+						if (Physics.Raycast (ray, out hit)) {
+								Vector3 p = hit.point;
+								Debug.Log (p);
+								heroNav.SetDestination (p);
+						}
+				}
+
+        if (heroNav.hasPath)
+        {
+            aniString = "run";
+            transform.LookAt(heroNav.nextPosition);
+            GetComponent<Animation>().wrapMode = WrapMode.Loop;
+            if (heroNav.isOnOffMeshLink) {
+                if(heroNav.currentOffMeshLinkData.offMeshLink.name == "JumpLink"){                  //进入下梯子路线
+                    aniString = "jump";               
+                }
+                if (heroNav.currentOffMeshLinkData.offMeshLink.name == "ClimLink") {                //进入爬梯子路线
+                    aniString = "casting";
+                }
+                lefpStart = heroNav.currentOffMeshLinkData.offMeshLink.startTransform.position;
+                lefpEnd = heroNav.currentOffMeshLinkData.offMeshLink.endTransform.position;
+                lerpRatio = Time.time;
+                lerpBool = true;
+            }
+        }
+        else {
+            aniString = "hit1";
+            GetComponent<Animation>().wrapMode = WrapMode.Once;
+        }
+        GetComponent<Animation>().Play(aniString);
+        if (lerpBool) {
+            transform.position = Vector3.Lerp(lefpStart, lefpEnd, (Time.time - lerpRatio) * 2);
+            if (transform.position == lefpEnd) {
+                lerpBool = false;
+            }
+        }
+	}
+}
+
+
+
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+
+9.7
+AssetBundle网络文件上传下载
+
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using UnityEditor;
+
+public class imporeasset : MonoBehaviour {
+	[@MenuItem("Test/BuildAssetBundles")]
+	static void BuildAssetBundles(){
+		BuildPipeline.BuildAssetBundles ("Assets/AssetBundles");
+	}
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+//	Last login: Wed Sep  7 08:57:49 on console
+//	bogon:~ stutend$ cd /Users/stutend/Documents
+//	bogon:Documents stutend$ python -m SimpleHTTPServer 8080
+}
+
+
+=================================================================================================================================================================
+
+
+using UnityEngine;
+using System.Collections;
+
+public class DownloadAsset : MonoBehaviour {
+	public GameObject goCube;//修改纹理
+	public GameObject goCapture;
+	public Transform newPosition;
+
+	private string url1 = "http://127.0.0.1:8080/image.assetbundle";
+	private string url2="http://127.0.0.1:8080/mat.assetbundle";
+	private string url3="http://127.0.0.1:8080/prefab.assetbundle";
+	void downTexture(){
+		StartCoroutine (download_Texture(url1));
+	}
+	void downMaterial(){
+		StartCoroutine (download_material(url2));
+	}
+	void downPrefab(){
+		StartCoroutine (download_prefab (url3));
+
+	}
+	IEnumerator download_Texture(string url){
+		WWW downAsset = new WWW (url);
+		yield return downAsset;
+		goCube.GetComponent <Renderer > ().material.mainTexture =
+			(Texture)downAsset.assetBundle.LoadAsset ("wuxiao");
+		downAsset.assetBundle.Unload (false);
+	}
+	IEnumerator download_material(string url){
+		WWW downAsset = new WWW (url);
+		yield return downAsset;
+		goCapture .GetComponent <Renderer > ().material =
+			(Material)downAsset.assetBundle.LoadAsset ("myMaterial");
+		downAsset.assetBundle.Unload (false);
+	}
+	IEnumerator download_prefab(string url){
+		//同步
+//		WWW downAsset = new WWW (url);
+//		yield return downAsset;
+
+//		GameObject obj=(GameObject)downAsset.assetBundle.LoadAsset ("prefab");
+//		GameObject obj1=(GameObject )	Instantiate (obj, newPosition.position, newPosition.rotation);
+//		obj1.GetComponent <Renderer> ().material.color = Color.yellow;
+
+//		downAsset.assetBundle.Unload (false);
+//		downAsset.Dispose ();
+
+		//异步
+		WWW downAsset = new WWW (url);
+		yield return downAsset;
+
+		AssetBundle bundle = downAsset.assetBundle;
+		AssetBundleRequest request = bundle.LoadAssetAsync ("prefab", typeof(GameObject));
+		yield return request;
+		GameObject gpPrefabs = (GameObject)Instantiate (request.asset);
+		gpPrefabs.GetComponent <Renderer> ().material.color = Color.blue;
+		gpPrefabs.transform.position = newPosition.transform.position;
+
+		downAsset.assetBundle.Unload (false);
+		downAsset.Dispose ();
+	}
+	// Use this for initialization
+	void Start () {
+		downTexture ();
+		downMaterial ();
+		downPrefab ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+
+
+public class wwwDown : MonoBehaviour {
+	public GameObject cube;
+	public GameObject sphere;
+
+	void downloadByHttp(){
+		StartCoroutine (loadByHttp());
+	}
+	void downloadByFile(){
+		StartCoroutine (loadByFile ());
+	}
+	IEnumerator loadByFile(){
+		WWW texture = new WWW ("file:///Users/stutend/Desktop/unity资源/图片/moon.jpg");
+
+		yield return texture;
+		cube .GetComponent <MeshRenderer> ().material.mainTexture = texture.texture;
+		texture.Dispose ();
+
+
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("user_name", "123456");
+		wwwform.AddField ("user_password","456789");
+		//get
+	//	WWW www = new WWW ("http://172.16.10.2:8080/service/registerUser?user_name=123456&user_password=456789");
+		 
+		//post
+		WWW www=new WWW("http://172.16.10.2:8080/service/registerUser",wwwform);
+	//	WWW www=new WWW("www.baidu.com");
+		yield return www;
+		Debug.Log (www.text);
+	}
+	IEnumerator loadByHttp(){
+		WWW texture = new WWW ("http://tupian.qqjay.com/u/2013/1127/19_222949_3.jpg");
+
+		yield return texture;
+		sphere.GetComponent <MeshRenderer> ().material.mainTexture = texture.texture;
+		texture.Dispose ();
+	}
+
+
+
+
+	// Use this for initialization
+	void Start () {
+		downloadByHttp ();
+		downloadByFile ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	//set post
+	//请求：请求行，请求头，请求体
+	//响应：响应行，响应头，响应体
+	//Editor里面操作的是编译器
+}
+
+IEnumerator shangchuan(){
+		WWW aaa = new WWW ("http://172.16.10.2:8080/service/startImageNoteSync?user_name=wanjawu");
+		yield return aaa;
+		Debug.Log (aaa.text);
+//		string[] str1 = aaa.text.Split ('<');
+//		string[] str2 = str1 [10].Split ('>');
+//		WWWForm wwwform = new WWWForm ();
+//		wwwform.AddField ("user_name", "wanjawu");
+//		wwwform.AddField ("sync_id", str2 [1]);
+//		wwwform.AddField ("image_id", "3");
+//		wwwform.AddBinaryData ("file", im.EncodeToJPG ());
+//		WWW www = new WWW ("http://172.16.10.2:8080/service/uploadUserImageNote", wwwform);
+//		yield return www;
+	}
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+9.8
+服务器
+TCP:面向连接的可靠传输协议，通过三次握手建立连接
+UDP：无连接的不可靠传输协议，只管发送不管接收
+socket：套接字
+
+
+
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+9.18(周日）
+UGUI
+
+
+
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+public class denglu : MonoBehaviour {
+	public InputField userName;
+	public InputField passWord;
+	public Text showMessage;
+	public void OnLogonButtonClick(){
+		string username = this.userName.text;
+		string password = this.passWord.text;
+		if (username == "admin" && password == "123456") {
+			showMessage.text = "登录成功！";
+			showMessage.gameObject.SetActive (true);
+		} else {
+			showMessage.gameObject.SetActive (true);
+			showMessage.text = "用户名或密码错误，请重新输入！";
+			StartCoroutine (DisapperMessage ());
+		}
+	}
+	IEnumerator DisapperMessage(){
+		yield return new WaitForSeconds (3);
+		showMessage.gameObject.SetActive (false);
+	}
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+public class OnClass : MonoBehaviour {
+	private Text myText;
+	public GameObject goParent;
+	// Use this for initialization
+	void Start () {
+		myText = GameObject.Find ("Canvas/Text").GetComponent <Text> ();
+		myText.text = "hello哈哈 world";
+
+		GameObject GoNewObject = new GameObject ("Button");
+		GoNewObject.transform.localPosition = new Vector3 (80,80, 0);
+		GoNewObject.transform.SetParent (goParent.transform, false);
+		Image image = GoNewObject.AddComponent<Image> ();
+		Button but = GoNewObject.AddComponent<Button> ();
+		image.overrideSprite = Resources.Load ("car", typeof(Sprite))as Sprite;
+		but.onClick.AddListener (click1);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	public void click(){
+		print ("click");
+	}
+	public void click1(){
+		print ("click1");
+	}
+}
+
+
+
+
+=================================================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+
+public class OnUILayout : MonoBehaviour {
+	public GameObject UILayout;
+	public GameObject wuxiao;
+	// Use this for initialization
+	void Start () {
+		GameObject fuben = (GameObject)Instantiate (wuxiao);
+		fuben.transform.SetParent (UILayout.transform,false );
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+=================================================================================================================================================================
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class UGUIImagePlus : Image {
+	PolygonCollider2D collider;
+	void Awake(){
+		collider = GetComponent <PolygonCollider2D> ();
+	}
+	override public bool IsRaycastLocationValid(Vector2 sp,Camera eventCamera){
+		bool inside = collider.OverlapPoint (sp);
+		return inside;
+	}
+}
+
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+
+9.19
+屏幕适配 VS（luaC#交互）
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using LuaInterface;
+namespace luaCs
+{
+    class TestClass {
+        private int value = 0;
+        public void TestPrint(int num) {
+            Console.WriteLine("调用testclass 实例方法testprint value={0}", value = num);
+        }
+        public static void TestStaticPrint() {
+            Console.WriteLine("调用testclass 实例方法testprint");
+        }
+    }
+    class TestClass2
+    {
+        public TestClass2(string str) {
+            Console.WriteLine("called TestClass2(string str) str={0}", str);
+        }
+        public TestClass2(int n) {
+            Console.WriteLine("called testclass2(int n) n={0}", n);
+        }
+        public TestClass2(int n1, int n2) {
+            Console.WriteLine("called testclass2(int n1,int  n2) n1={0},n2={1}", n1, n2);
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+       //     Lua lua = new Lua();
+        //    lua.DoString("print(\"haha\")");
+            
+        /*    Lua lua = new Lua();
+            lua["num"] = 2;
+            lua["str"] = "a string";
+            lua.NewTable("Tab");
+            lua.DoString("num=100;print(\"i am a lua string\")");
+            lua.DoFile("C:\\Users\\Administrator\\Desktop\\a.txt");
+            double num = (double)lua["num"];
+            string str = (string)lua["str"];
+            Console.WriteLine("num={0}", num);
+            Console.WriteLine("str={0}", str);
+            Console.WriteLine("width={0}", lua["width"]);
+            Console.WriteLine("height={0}", lua["height"]);*/
+
+          /*  Lua lua = new Lua();
+            lua.DoFile("C:\\Users\\Administrator\\Desktop\\b.txt");
+            Console.ReadLine();*/
+
+            Lua lua = new Lua();
+            TestClass obj = new TestClass();
+            lua.RegisterFunction("TestPrint", obj, obj.GetType().GetMethod("TestPrint"));
+            lua.RegisterFunction("TestStaticPrint", obj, obj.GetType().GetMethod("TestStaticPrint"));
+            lua.DoString("TestPrint(10)");
+            lua.DoString("TestStaticPrint()");
+            Console.ReadLine();
+        }
+    }
+}
+
+a.txt
+
+print("hahahahah");
+num=100
+str="i am another string"
+width=50
+height=100
+for i,v in ipairs(_G) do 
+	print(i,v)
+end
+
+
+
+b.txt
+
+-- 加载自定义类型，先加载程序集，在加载类型
+luanet.load_assembly("luaCs")
+TestClass = luanet.import_type("luaCs.TestClass2")
+
+obj1 = TestClass(2, 3)    -- 匹配public TestClass2(int n1, int n2)
+obj2 = TestClass("x")    -- 匹配public TestClass2(string str)
+obj3 = TestClass(3)        -- 匹public TestClass2(string str)
+
+TestClass_cons2 = luanet.get_constructor_bysig(TestClass, 'System.Int32')
+obj3 = TestClass_cons2(3)    -- 匹配public TestClass2(int n)
+
+-- lua_state * lua的虚拟 “堆栈” 
+
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+9.20
+MVC框架
+
+
+
+
+
+using System;
+
+public class myPlayerModel  {
+
+
+
+
+	private int fenshu;
+	public int FS{
+		get{ return fenshu;}
+		set{ 
+			fenshu = value;
+		}
+	}
+	private int level;
+	public int Level{
+		get{return level;}
+		set{ level = value;}
+	}
+	private int hp=150;
+	public int HP{
+		get{ return hp;}
+		set{ hp = value;}
+	}
+
+	public bool isDie(){
+		if (HP <=0)
+			return true;
+		else
+			return false;
+	}
+
+
+
+
+
+//	private int hp;
+//	public event EventHandler HPADD;
+//	public int HP{
+//		get{ return hp;}
+//		set{ 
+//			hp += value;
+//			if (HPADD != null) {
+//				HPADD (this,new  EventArgs ());
+//			}
+//		}
+//	}
+}
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using System;
+
+public class myPlayerCo:MonoBehaviour{
+
+	myPlayerModel model;
+	myView view;
+
+	void Start(){
+		model = new myPlayerModel ();
+		view = GameObject.Find ("MainGUI").GetComponent <myView> ();
+		view.jiafen += (s, e) => {
+			model.FS+=50;
+
+		};
+		view.jiafen += xianshi;
+		view.hpUp += hpcontr;
+		view.levelUp += levelcontr;
+		view.jianfen += jianfen;
+
+	}
+
+//	xianshi(null,null);
+	public void xianshi(object obj,EventArgs arg){
+		if (model.isDie ())
+			return;
+		view.label.text = "Experence:"+Convert.ToString (model.FS);
+	}
+
+	public void levelcontr(object obj,EventArgs arg){
+		if (model.isDie ())
+			return;
+		model.Level = (int)model.FS / 100+1;
+		view.level.text ="Level:"+ Convert.ToString (model.Level);
+	}
+	public void hpcontr(object obj,EventArgs arg){
+		if (model.isDie ())
+			return;
+		model.HP = ((int)model.FS / 150) * 150+150;
+		view.hp.text ="HP:"+ Convert.ToString (model.HP);
+	}
+	public void jianfen(object obj,EventArgs arg){
+		if (model.isDie ()) {
+			view.hp.text = "Dead";
+			view.hp.color = Color.red;
+			return;
+		}
+		model.HP -= 50;
+		view.hp.text = "HP:"+Convert.ToString (model.HP);
+	}
+
+//	myPlayerModel model;
+//	myView view;
+//	void Start(){
+//	view = GameObject.Find ("MainGUI").GetComponent <myView> ();
+//
+//		model = new myPlayerModel ();
+//		model.HPADD += updateLabel;
+//		model.HPADD += (s, e) => Debug.Log ("HHHHHHHHHHH");
+//		view.OnClick += (s, e) => {
+//			model.HP = 50;
+//		};
+//
+//
+//			updateLabel(null,null);
+//	}
+//
+//
+//	 void updateLabel(object sender,EventArgs arg){
+//		view.Text = System.Convert.ToString (model.HP);
+//	}
+
+
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using System ;
+public class myView : MonoBehaviour {
+
+
+	public UILabel label;
+	public UILabel level;
+	public UILabel hp;
+	public event EventHandler jiafen;
+	public event EventHandler levelUp;
+	public event EventHandler hpUp;
+	public event EventHandler jianfen;
+	void Start(){
+		label.text = "Experence:0";
+		level.text = "Level:1";
+		hp.text =" HP:150";
+	}
+	public void OnClick(){
+		if (jiafen != null) {
+			jiafen (this, new EventArgs ());
+		}
+		if (levelUp != null) {
+			levelUp (this, new EventArgs ());
+		}
+		if (hpUp != null) {
+			hpUp (this, new EventArgs ());
+		}
+	}
+
+	public void OnClickjian(){
+		if (jianfen != null) {
+			jianfen (this, new EventArgs ());
+		}
+	}
+
+//	public UILabel hplabel;
+////	public UIButton addButton;
+//	public string Text{
+//		get{ 
+//			return hplabel.text;
+//		}
+//		set{ 
+//			hplabel.text = value;
+//		}
+//	}
+//	public event EventHandler OnClick;
+//	public void btnClicked(){
+//		if (OnClick != null) {
+//			OnClick (this, new EventArgs ());
+//		}
+//	}
+
+}
+
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+9.21
+lua热更新
+
+
+—-define
+CtrlName = {
+	--Prompt = "PromptCtrl",
+	--Message = "MessageCtrl",
+	Demo = "DemoCtrl",
+	Demo1 = "Demo1Ctrl"
+}
+
+--Э������--
+ProtocalType = {
+	BINARY = 0,
+	PB_LUA = 1,
+	PBC = 2,
+	SPROTO = 3,
+}
+--��ǰʹ�õ�Э������--
+TestProtoType = ProtocalType.BINARY;
+
+Util = SimpleFramework.Util;
+AppConst = SimpleFramework.AppConst;
+LuaHelper = SimpleFramework.LuaHelper;
+ByteBuffer = SimpleFramework.ByteBuffer;
+
+ResManager = LuaHelper.GetResManager();
+NetManager = LuaHelper.GetNetManager();
+PanelManager = LuaHelper.GetPanelManager();
+MusicManager = LuaHelper.GetMusicManager();
+
+
+
+
+require "Common/define"
+
+Demo1Ctrl = {};
+local this = Demo1Ctrl;
+
+local panel;
+local demo2;
+local transform;
+local gameObject;
+
+function Demo1Ctrl.New()
+	warn("Demo2Ctrl.New--->>");
+	return this;
+end
+
+function Demo1Ctrl.Awake()
+	warn("Demo2Ctrl.Awake--->>");
+	PanelManager:CreatePanel('Demo1', this.OnCreate);
+end
+
+function Demo1Ctrl.OnCreate(obj)
+	gameObject = obj;
+	transform = obj.transform;
+
+	panel = transform:GetComponent('UIPanel');
+	demo2 = transform:GetComponent('LuaBehaviour');
+	warn("Start lua--->>"..gameObject.name);
+
+	demo2:AddClick(Demo1Panel.demoClose, this.OnClick);
+end
+
+function Demo1Ctrl.OnClick(go)
+	destroy(gameObject);
+end
+
+function Demo1Ctrl.Close()
+	PanelManager:ClosePanel(CtrlName.Demo);
+end
+
+
+
+
+
+require "Common/define"
+
+DemoCtrl={};
+local this=DemoCtrl;
+local panel;
+local gameObject;
+local transform;
+local demo;
+function DemoCtrl.New()
+	return this;
+end
+
+function DemoCtrl.Awake()
+	warn("DemoCtrl.New");
+	PanelManager:CreatePanel("Demo",this.OnCreate);
+end
+
+function DemoCtrl.OnCreate(obj)
+	print("a")
+	gameObject=obj;
+	transform=obj.transform;
+print("b")
+	panel=transform:GetComponent("UIPanel");
+	demo=transform:GetComponent("LuaBehaviour");
+	warn("Start Lua"..gameObject.name);
+
+	demo:AddClick(DemoPanel.demoopen,this.OnClick);
+	demo:AddClick(DemoPanel.democlose,this.OnClick2);
+print("c")
+
+end
+
+function DemoCtrl.OnClick(go)
+	--PanelManager:CreatePanel("Demo1",Demo1Ctrl.OnCreate);
+	--热更新更换场景，也可以更换具体的逻辑
+	--Application.LoadLevel("TestNewScene");
+	for i=1,1000 do
+	 GameObject.Find("Cube").transform:Rotate(0,0,1);
+	 --yield return ;
+	 --Coroutine.yield();
+	
+	end
+	GameObject.Find("Text1"):GetComponent("Text").text="hahahaha";
+	 -- GameObject.Find("Cube"):GetComponent("MeshRenderer").material.color=Color.red;
+end
+
+function DemoCtrl.OnClick2(go)
+	print("Demo2Clicked");
+	--GameObject.Find("Cube").transform:Rotate(0,0,1);
+end
+
+
+
+
+
+local transform;
+local gameObject;
+
+Demo1Panel = {};
+local this = Demo1Panel;
+
+function Demo1Panel.Awake(obj)
+	gameObject = obj;
+	transform = obj.transform;
+
+	this.InitPanel();
+	warn("Awake lua--->>"..gameObject.name);
+end
+
+function Demo1Panel.InitPanel()
+	this.demoClose = transform:FindChild("Button").gameObject;
+end
+
+function Demo1Panel.OnDestroy()
+	warn("OnDestroy---->>>");
+end
+
+
+
+
+local transform;
+local gameObject;
+DemoPanel={};
+local this=DemoPanel;
+function DemoPanel.Awake(obj)
+	gameObject=obj;
+	transform=obj.transform;
+	this.InitPanel();
+
+	warn("Awake la--->"..gameObject.name);
+
+end
+
+function DemoPanel.InitPanel()
+	this.demoopen=transform:FindChild("Button").gameObject;
+	this.democlose=transform:FindChild("Button1").gameObject;
+end
+
+function DemoPanel.OnDestroy()
+	warn("OnDestroy");
+end
+=================================================================================================================================================================
+
+
+
+
+=================================================================================================================================================================
+
+9.22
+项目打包
+
+
+using UnityEngine;
+using System.Collections;
+
+public class chumo : MonoBehaviour {
+	public float  speed = 0.01f;
+	public GameObject obj;
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Moved) {
+			Vector2 touchPosition1 = Input.GetTouch (0).position;
+			print (touchPosition1);
+			Vector2 touchDeltaPosition = Input.GetTouch (0).deltaPosition;
+			transform.Translate (touchDeltaPosition.x * speed, touchDeltaPosition.y * speed, 0);
+
+		}
+		if (Input.GetKey (KeyCode.A)) {
+			GameObject obj1 = Instantiate (obj);
+			obj1.transform.position = this.transform.position + new Vector3 (0, 1, 0);
+		}
+		if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began) {
+			Ray ray = Camera.main.ScreenPointToRay (Input.GetTouch (0).position);
+			RaycastHit hit;
+			if (Physics.Raycast (ray, out hit)) {
+				Vector3 p = hit.point;
+				//Instantiate (obj, p, transform.rotation);
+			}
+		}
+	}
+}
+/*打包安卓：首先需要SDK，版本必须匹配unity，JRE1，7以上，之后点击buildSettings,第四个选项，进行安卓各种设置，主要是Bundle还有版本号，＊，＊，＊
+ * 最终需要Build->BuildRun,安装测试
+
+
+1,手机真机测试：手机装unity Remote 软件，先打开手机软件，再打开电脑unity，Edit ->ProjectSetting->Editor->Device(any Android Device)
+2,打包，可以改图片，PlayerSettings->Bundle Identifier(*.*.*)
+3,打包安卓需要对应的SDK，在Unity->preferences->External Tools->SDK
+4，iphone模拟机：选中打包Mac，在p;ayerSettings->Debugging and crash reporting->TargetSDk->SimulatorSdk打包出来的文件夹在Xcode中打开，
+  Unity-iphone -->BuildSettings->Architectures>SupportedPlatforms>IOS,选手机
+
+
+/*
+
+在Unity开发中捕捉Android的键盘
+
+
+// 返回键
+
+if ( Application.platform == RuntimePlatform.Android &&(Input.GetKeyDown(KeyCode.Escape)))
+{
+//....
+}
+// Home键
+
+if ( Application.platform == RuntimePlatform.Android &&(Input.GetKeyDown(KeyCode.Home) ))
+{
+//.....
+}
+
+*/
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+=================================================================================================================================================================
+
+
+
+
+　　
