@@ -50,18 +50,13 @@ lua热更新
 9.22
 项目打包
 
+9.23 
+pureMVC
 
 
-代码版本管理：SVN Git 
-Github版本管理步骤
-1，申请账号，新建代码仓库
-2，下载客户端或者使用命令
-3，客户端点击Clone，将代码下载到本地进行修改
-4，每次修改都要Commit到本地仓库，在点击Sync同步到远程仓库
-5，分支的创建和管理
-6，.gitignore的使用
-工具：GithubDesktop,SourceTree,Tower
-平台：Github,CSDN,Code等
+9.26
+代码管理 Github,GithubDesktop SourceTree
+
 =================================================================================================================================================================
 
 
@@ -147,6 +142,7 @@ public class LevelParse : MonoBehaviour {
 		}
 
 	}
+
 	void ParserLevel(){
 		XmlDocument doc = new XmlDocument ();
 		doc.Load (xmlFilePath);
@@ -2175,11 +2171,194 @@ if ( Application.platform == RuntimePlatform.Android &&(Input.GetKeyDown(KeyCode
 =================================================================================================================================================================
 
 =================================================================================================================================================================
+9.25
+pureMVC
+
+
+using UnityEngine;
+using System.Collections;
+
+public class CharacterInfo  {
+
+	public int Level{get;set;}
+	public int HP{get;set;}
+	public CharacterInfo(){
+
+	}
+	public CharacterInfo(int level,int hp)
+	{
+		Level=level;
+		HP=hp;
+	}
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using PureMVC.Patterns;
+
+
+public class TestPorxy :Proxy {
+	public new const string NAME="TestProxy";
+	public CharacterInfo Data{ get; set; }
+	public TestPorxy():base(NAME){
+		Data=new CharacterInfo();
+	}
+	public void ChangLevel(int change){
+		Data.Level += change;
+		SendNotification (NotificationConstant.LevelChange, Data);
+	}
+	public void hp(int change){
+		Data.HP  += 2*change;
+		SendNotification (NotificationConstant.LevelChange, Data);
+	}
+
+}
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using PureMVC.Patterns;
+using UnityEngine.UI;
+using System.Collections.Generic;
+
+
+public class TestMediator : Mediator {
+
+	public new const string NAME="TestMediator";
+	private Text levelText;
+	private Button levelUpButton;
+	public TestMediator(GameObject root):base(NAME){
+		levelText = GameUtility.GetChildComponent<Text> (root, "Text/LevelText");
+		levelUpButton = GameUtility.GetChildComponent<Button> (root, "LevelUpButton");
+		levelUpButton.onClick.AddListener (OnClickLevelUpButton);
+	}
+	private void OnClickLevelUpButton(){
+		SendNotification (NotificationConstant.LevelUp);
+	}
+	public override IList<string> ListNotificationInterests(){
+		IList<string> list = new List<string> ();
+		list.Add (NotificationConstant.LevelChange);
+		return list;
+	}
+	public override void HandleNotification(PureMVC.Interfaces.INotification notification){
+		switch (notification.Name) {
+		case NotificationConstant.LevelChange:
+			CharacterInfo ci=notification.Body as CharacterInfo;
+			levelText.text=ci.Level.ToString();
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using PureMVC.Patterns;
+
+public class TestFacade : Facade {
+	public TestFacade(GameObject canvas){
+	RegisterCommand(NotificationConstant.LevelUp,typeof(TestCommand));
+		RegisterMediator (new TestMediator (canvas));
+		RegisterProxy (new TestPorxy ());
+	}
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using PureMVC.Patterns;
+
+public class TestCommand :SimpleCommand {
+
+	public new const string NAME="TestCommand";
+	public override void Execute(PureMVC.Interfaces.INotification notification){
+		TestPorxy proxy = (TestPorxy)Facade.RetrieveProxy (TestPorxy.NAME);
+		proxy.ChangLevel (1);
+	}
+}
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+
+public class Test : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+		new TestFacade (gameObject);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+
+public class NotificationConstant  {
+
+	public const string LevelUp="levelUp";
+	public const string LevelChange="LevelChange";
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+
+public class GameUtility  {
+	public static Transform GetChild(GameObject root,string path){
+		Transform tra = root.transform.Find (path);
+		if (tra == null)
+			Debug.Log (path + "not find");
+		return tra;
+	}
+	public static T GetChildComponent<T>(GameObject root,string path){
+		Transform tra = root.transform.Find (path);
+		if (tra == null)
+			Debug.Log (path + "not find");
+		T t = tra.GetComponent<T> ();
+		return t;
+	}
+}
 
 =================================================================================================================================================================
 
 =================================================================================================================================================================
-
+9.26
+代码管理 Github,GithubDesktop SourceTree
+代码版本管理：SVN Git 
+Github版本管理步骤
+1，申请账号，新建代码仓库
+2，下载客户端或者使用命令
+3，客户端点击Clone，将代码下载到本地进行修改
+4，每次修改都要Commit到本地仓库，在点击Sync同步到远程仓库
+5，分支的创建和管理
+6，.gitignore的使用
+工具：GithubDesktop,SourceTree,Tower
+平台：Github,CSDN,Code等
 =================================================================================================================================================================
 
 =================================================================================================================================================================
