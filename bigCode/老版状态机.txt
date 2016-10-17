@@ -1,0 +1,274 @@
+
+playerCtr
+===============================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class PlayerCtr : MonoBehaviour {
+    [SerializeField]
+    private EasyJoystick joyStick;
+
+    private StateMachine m_StateMachine;
+
+    public Animation ani;
+	// Use this for initialization
+	void Start () {
+        //初始状态机
+        m_StateMachine = new StateMachine(new IdleState(0, this));
+
+        InitState();
+       
+	}
+
+    void InitState()
+    {
+       m_StateMachine.RegisterState(new RunState(1,this));
+		m_StateMachine .RegisterState (new AttackState (2,this));
+		m_StateMachine.RegisterState (new DefendState (3, this));
+		m_StateMachine.RegisterState (new DieState (4, this));
+		m_StateMachine.RegisterState (new JumpState (5, this));
+    }
+	
+    
+	// Update is called once per frame
+	void Update () {
+        float x = joyStick.JoystickTouch.x;
+        float z = joyStick.JoystickTouch.y;
+
+        if (x != 0 || z != 0)
+        {
+            transform.LookAt(new Vector3(x,0,z) + transform.position);
+			if (x > 0) {
+				m_StateMachine.TranslateToState (1);
+	
+			} else if (x < 0) {
+				m_StateMachine.TranslateToState (4);
+		
+			} 
+		}
+		else if (x == 0 && z  == 0) {
+			m_StateMachine.TranslateToState (0);
+		}
+	}
+
+    void LateUpdate()
+    {
+        m_StateMachine.FSMUpdate();
+    }
+
+    void OnDrag(Vector2 delta)
+    {
+        Debug.Log(delta);
+        transform.Rotate(-Vector3.up*delta.normalized.x*10f);
+    }
+}
+
+
+
+
+StateMachine
+===============================================================================================================================================
+
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+/// <summary>
+/// 状态机
+/// </summary>
+public class StateMachine{
+    /// <summary>
+    /// 状态缓存
+    /// </summary>
+    public Dictionary<int, StateBase> m_StateCache;
+
+    /// <summary>
+    /// 当前状态
+    /// </summary>
+    public StateBase m_CurrentState;
+    /// <summary>
+    /// 当前状态的前一个状态
+    /// </summary>
+    public StateBase m_PreviousState;
+
+    #region StateMachine  Constructor
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="beginState">开始状态</param>
+    public StateMachine(StateBase beginState)
+    {
+        m_PreviousState = null;
+        m_CurrentState = beginState;
+        m_StateCache = new Dictionary<int, StateBase>();
+        //注册状态
+        RegisterState(beginState);
+        m_CurrentState.OnEnter();
+    }
+    #endregion
+
+    #region FSMUpdate  状态机监测状态
+    /// <summary>
+    /// 状态机监测状态变化
+    /// </summary>
+    public void FSMUpdate()
+    {
+        if (m_CurrentState != null)
+            m_CurrentState.OnStay();
+    }
+    #endregion
+
+    #region TranslateToState 状态切换
+    /// <summary>
+    /// 状态切换
+    /// </summary>
+    /// <param name="id">目标状态的id号</param>
+    /// <param name="args">可变参数</param>
+    public void TranslateToState(int id,params object[] args)
+    {
+        int key_id = id;
+        if (!m_StateCache.ContainsKey(key_id))
+        {
+            Debug.LogError("The key is not Exist");
+            return;
+        }
+        //当前状态退出
+        m_CurrentState.OnExit();
+        //保存当前状态为下一个新状态的前一个状态
+        m_PreviousState = m_CurrentState;
+        //当前状态更新到下一个新状态
+        m_CurrentState = m_StateCache[key_id];
+        //新的状态开始进入
+        m_CurrentState.OnEnter(args);
+    }
+    #endregion
+
+    #region RegisterState   注册一个新的状态到缓存中
+    /// <summary>
+    /// 注册一个新的状态到缓存中
+    /// </summary>
+    /// <param name="aState">新状态</param>
+    public void RegisterState(StateBase aState)
+    {
+        int id = aState.ID;
+        //状态是否缓存了
+        if (m_StateCache.ContainsKey(id))
+        {
+            Debug.LogError("The State has been added the Cache");
+            return;
+        }
+        //缓存aState状态
+        m_StateCache.Add(id,aState);
+        //设置aState状态的状态机对象
+        aState.machine = this;
+    }
+    #endregion
+
+
+}
+
+stateBase
+===============================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+/// <summary>
+/// 状态基类
+/// </summary>
+public abstract class StateBase {
+    /// <summary>
+    /// 每个状态对应不同的ID号
+    /// </summary>
+    public int ID { get; private set; }
+
+    /// <summary>
+    /// 状态机
+    /// </summary>
+    public StateMachine machine;
+
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="id">状态的id号(id号有对应的枚举)</param>
+    public StateBase(int id)
+    {
+        ID = id;
+    }
+    
+    /// <summary>
+    /// 状态进入时调用一次
+    /// </summary>
+    public virtual void OnEnter(params object[] args)
+    { }
+    /// <summary>
+    /// 状态退出时调用一次
+    /// </summary>
+    public virtual void OnExit(params object[] args)
+    { }
+    /// <summary>
+    /// 状态进入后，每帧调用一次
+    /// </summary>
+    public virtual void OnStay(params object[] args)
+    { }
+}
+
+
+stateTemplate
+===============================================================================================================================================
+using UnityEngine;
+using System.Collections;
+/// <summary>
+/// 状态模板
+/// </summary>
+public class StateTemplate<T> :StateBase {
+    /// <summary>
+    /// 状态的拥有者
+    /// </summary>
+    public T m_owner;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="id">状态的id号</param>
+    /// <param name="owner">状态的拥有者</param>
+    public StateTemplate(int id,T owner):base(id)
+    {
+        m_owner = owner;
+    }
+
+
+}
+
+
+RunState
+===============================================================================================================================================
+using UnityEngine;
+using System.Collections;
+
+public class RunState  : StateTemplate<PlayerCtr> {
+
+    public RunState(int id,PlayerCtr owner):base(id,owner)
+    {
+        
+    }
+
+    public override void OnEnter(params object[] args)
+    {
+        base.OnEnter(args);
+        Debug.Log("RunState Enter");
+        m_owner.ani.Play("Run");
+    }
+
+    public override void OnStay(params object[] args)
+    {
+        base.OnStay(args);
+    }
+
+    public override void OnExit(params object[] args)
+    {
+        base.OnExit(args);
+        Debug.Log("RunState OnExit");
+		//m_owner.ani.Stop ();
+    }
+}
+
+

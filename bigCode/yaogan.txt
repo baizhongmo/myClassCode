@@ -1,0 +1,47 @@
+using UnityEngine;
+using System.Collections;
+using UnityEngine.EventSystems;
+
+public class yaogan : MonoBehaviour,IBeginDragHandler,IDragHandler,IEndDragHandler  {
+
+	private Vector3 origin;
+	public float radius=50.0f;
+	private Vector3 dir = Vector3.zero;
+	public static bool isSport=false;
+	public GameObject Leader;
+	public void OnBeginDrag (PointerEventData eventData)
+	{
+		origin = transform.position;
+	}
+
+	
+	public void OnDrag (PointerEventData eventData)
+	{
+		isSport = true;
+		transform.position = Input.mousePosition;
+		dir = (transform.position - origin).normalized;
+
+		if (Vector3.Distance (transform.position, origin) > radius) {
+			transform.position =origin+ dir * radius;
+		}
+	}
+	
+
+	
+	public void OnEndDrag (PointerEventData eventData)
+	{
+		isSport = false;
+		transform.position = origin;
+	}
+	
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}

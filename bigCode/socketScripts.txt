@@ -1,0 +1,222 @@
+
+using UnityEngine;
+using System.Collections;
+
+public static class GameData  {
+
+    public static float x=0;
+    public static float y=0;
+
+}
+
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+
+public class MoveSphere : MonoBehaviour {
+
+	// Update is called once per frame
+    void Update()
+    {
+        float tex=0, tey=0;
+        lock (ConnectSocket.o)
+        {
+            tex = GameData.x;
+            tey = GameData.y;
+        }
+        Vector3 te = this.transform.position;
+        te.x = tex;
+        te.y = tey;
+        this.transform.position = te;
+	}
+}
+
+
+
+
+public class JoyStickButton : MonoBehaviour {
+
+	private ConnectSocket mySocket;
+	void Start()
+	{
+		if (mySocket == null)
+		{
+			mySocket = ConnectSocket.getSocketInstance();
+		}
+	}
+	void OnEnable()  
+	{  
+		EasyJoystick.On_JoystickMove += OnJoystickMove;
+	}
+	
+	void OnDisable()
+	{
+		EasyJoystick.On_JoystickMove -= OnJoystickMove;
+	}
+	
+	void OnDestroy()
+	{
+		EasyJoystick.On_JoystickMove -= OnJoystickMove;
+	}
+
+	//移动摇杆中  
+	void OnJoystickMove(MovingJoystick move)
+	{
+		Debug.Log ("moe");
+		float joyPositionX = move.joystickAxis.x/10;
+		float joyPositionY = move.joystickAxis.y/10;
+		byte[] x = ByteUtil.float2ByteArray(joyPositionX);
+		byte[] y = ByteUtil.float2ByteArray(joyPositionY);
+		byte[] sendMSG ={ 
+			x[0],x[1],x[2],x[3],
+			y[0],y[1],y[2],y[3]
+		};
+
+		mySocket.sendMSG (sendMSG);
+	}
+
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using System;
+using System.Threading;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+public class ConnectSocket {
+	public static Socket mySocket;
+
+	private static ConnectSocket instance;
+	public static System.Object o=new System.Object();
+
+	public static ConnectSocket getSocketInstance(){
+		if (instance == null) {
+			instance = new ConnectSocket ();
+		}
+		return instance;
+	}
+
+	private ConnectSocket()
+	{
+		mySocket = new Socket (AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
+		IPAddress ip = IPAddress.Parse ("127.0.0.1");
+		IPEndPoint ipe = new IPEndPoint (ip,2001);
+		IAsyncResult result = mySocket.BeginConnect (ipe,new AsyncCallback(connnectCallback),mySocket);
+		result.AsyncWaitHandle.WaitOne (5000,true);
+
+		if (mySocket.Connected) {
+			Thread thread=new Thread(new ThreadStart(getMSG));
+			thread.IsBackground=true;
+			thread.Start();
+		}
+
+	}
+
+	private void connnectCallback(IAsyncResult ast){
+		Debug.Log ("Connnect Success");
+
+	}
+
+	private void getMSG()
+	{
+		while (true) {
+			try{
+				byte[] bytesLen=new byte[4];
+				mySocket.Receive(bytesLen);
+				int length=ByteUtil.byteArray2Int(bytesLen,0);
+
+				byte[] bytes=new byte[length];
+				int count=0;
+				while(count<length){
+					int tempLength=mySocket.Receive(bytes);
+					count+=tempLength;
+				}
+				splitBytes(bytes);
+
+			}catch(Exception e){
+				Debug.Log(e.Message);
+				break;
+			}
+		}
+	}
+
+	public void sendMSG(byte[] bytes){
+		try{
+			int length=bytes.Length;
+			byte[] blength=ByteUtil.int2ByteArray(length);
+
+			mySocket.Send(blength,SocketFlags.None);
+			mySocket.Send(bytes,SocketFlags.None);
+
+		}catch(Exception e){
+			Debug.Log(e.Message);
+		}
+	}
+
+	private void splitBytes(byte[] bytes)//接受数据后拆包
+	{
+		int length = bytes.Length;//获取包长
+		if (length == 8)//是4位格式代表xOry
+		{
+			byte[] xb = { bytes[0], bytes[1], bytes[2], bytes[3] };
+			byte[] yb = { bytes[4], bytes[5], bytes[6], bytes[7] };
+			float tex = ByteUtil.byteArray2Float(xb, 0);
+			float tey = ByteUtil.byteArray2Float(yb, 0);
+			lock (o)
+			{
+				GameData.x = tex;
+				GameData.y = tey;
+			}
+		}
+	}
+
+}
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+
+public static  class ByteUtil{
+
+    public static int byteArray2Int(byte[] bt,int starIndex)//byte转int
+    {
+        int i = System.BitConverter.ToInt32(bt, starIndex);
+        return i;
+    }
+    public static byte[] int2ByteArray(int num)//int转byte
+    {
+        byte[] bt = System.BitConverter.GetBytes(num);
+        return bt;
+    }
+    public static float byteArray2Float(byte[] bt, int starIndex)//byte转float
+    {
+        float f = System.BitConverter.ToSingle(bt, starIndex);
+        return f;
+    }
+    public static byte[] float2ByteArray(float f)//float转byte
+    {
+        byte[] bt = System.BitConverter.GetBytes(f);
+        return bt;
+    }
+}
+
+
+
+
+
