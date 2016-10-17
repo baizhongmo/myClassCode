@@ -1,0 +1,16 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ConnectSocket.cs">
+    <Files>
+      <File FileName="Assets/Scripts/MoveSphere.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/JoyStickButton.cs" Line="49" Column="49" />
+      <File FileName="Assets/Scripts/ConnectSocket.cs" Line="45" Column="45" />
+      <File FileName="Assets/Scripts/ByteUtil.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/GameData.cs" Line="29" Column="29" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
