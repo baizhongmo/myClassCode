@@ -1,0 +1,135 @@
+using UnityEngine;
+using System.Collections;
+using System;
+public class model {
+
+	private int exp;
+	public event EventHandler xianshi;
+	public int Exp{
+		set{ exp = value;
+			if (xianshi != null) {
+				xianshi (this, new EventArgs ());
+			}
+		}
+		get{ return exp;}
+	}
+	private int level;
+	public int Level{
+		get{ return level;}
+		set{ level = value;}
+	}
+	private int hitpoint;
+	public int Hitpoint{
+		get{ return hitpoint;}
+		set{ hitpoint = value;}
+	}
+	public bool isDead(){
+		return (exp < 0);
+	}
+}
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using System;
+public class view : MonoBehaviour {
+	public UILabel experence;
+	public UILabel level;
+	public UILabel hitpoint;
+	public event EventHandler fuzhi;
+	public event EventHandler leve;
+	public event EventHandler hitpo;
+	public event EventHandler sub;
+	public void Click(){
+		if (fuzhi != null) {
+			fuzhi (this, new EventArgs ());
+		}
+		if (leve != null) {
+			leve (this, new EventArgs ());
+		}
+		if (hitpo != null) {
+			hitpo (this, new EventArgs ());
+		}
+
+	}
+	public void Clicksub(){
+		if (sub != null) {
+			sub (this, new EventArgs ());
+		}
+	}
+
+
+
+
+	// Use this for initialization
+	void Start () {
+	
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+}
+
+
+
+
+
+
+
+using UnityEngine;
+using System.Collections;
+using System;
+public class controller : MonoBehaviour {
+	model mod;
+	view vie;
+	// Use this for initialization
+	void Start () {
+		mod = new model ();
+		vie = GameObject.Find ("MainGUI").GetComponent <view> ();
+		mod.xianshi += xianshii;
+		vie.fuzhi += (s, e) => {
+			if(mod.isDead())
+				return;
+			mod.Exp += 50;
+		};
+		vie.hitpo += Hitpointt;
+		vie.leve += levell;
+		vie.sub += subb;
+	}
+	public void xianshii(object obj,EventArgs arg){
+		if (mod.isDead())
+			return;
+		vie.experence.text = "Experence:" +( mod.Exp).ToString();
+	}
+	public void levell(object obj,EventArgs arg){
+		if (mod.isDead())
+			return;
+		mod.Level= ((int)mod.Exp / 100);
+		vie.level.text = "Level:"+(mod.Level).ToString ();
+	}
+	public void Hitpointt(object obj,EventArgs arg){
+		if (mod.isDead())
+			return;
+		mod.Hitpoint = ((int)mod.Exp / 150) * 150 ;
+		vie.hitpoint.text = "HipPoint:" + (mod.Hitpoint).ToString ();
+	}
+	public void subb(object obj,EventArgs arg){
+		if (mod.isDead ()) {
+			vie.experence.text = "Dead";
+			vie.experence.color = Color.red;
+			vie.level.text = "Dead";
+			vie.level.color = Color.red;
+			vie.hitpoint.text = "Dead";
+			vie.hitpoint.color = Color.red;
+			return;
+		}
+		mod.Exp -= 50;
+		Hitpointt (null, null);
+		levell (null, null);
+	}
+}
+
