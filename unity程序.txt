@@ -5,7 +5,7 @@
 Jason文件 异步加载 协程
 
 8.24
-异步加载 角色控制器
+异步加载 角色控制器1
 
 8.25
 iTween插件（皇子）
@@ -2389,6 +2389,31 @@ public class GameUtility  {
  动态物体在烘培后有灯光效果，烘焙前加一个light probe group组件，放置好探头
  性能优化概念，见unity课件 杂项
 =================================================================================================================================================================
+一点平移到另一点
+using UnityEngine;
+using System.Collections;
+
+public class cube : MonoBehaviour {
+	public Transform startt;
+	public Transform endd;
+	// Use this for initialization
+	void Start () {
+		StartCoroutine ("xiecheng");
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+//		this.transform .position =Vector3 .Lerp (this.transform .position, startt .position,Time .deltaTime );
+	
+	}
+	IEnumerator xiecheng(){
+		for (float  i=0; i<1; i+=Time.deltaTime) {
+			yield return new WaitForSeconds(0);
+			transform .Translate ((startt .position -endd.position )*Time.deltaTime );
+		}
+	}
+}
 
 =================================================================================================================================================================
 
